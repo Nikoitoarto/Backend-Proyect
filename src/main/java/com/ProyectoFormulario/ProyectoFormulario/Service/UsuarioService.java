@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 public class UsuarioService extends ABaseService<Usuario> implements IUsuarioService {
 
 
+    @Autowired
+    private IAbaseRepository<Usuario, Long> repository; // Inyecta tu repositorio específico
+
     @Override
     protected IAbaseRepository<Usuario, Long> getRepository() {
-        return repository;
+        return repository; // Retorna el repositorio correcto
     }
-
-    @Autowired
-    private IAbaseRepository<Usuario, Long> repository;
 }
 

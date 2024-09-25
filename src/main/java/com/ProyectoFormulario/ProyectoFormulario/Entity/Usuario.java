@@ -9,48 +9,31 @@ import java.util.Set;
 @Table(name = "usuario")
 public class Usuario extends AbaseEntity{
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
 
     @Column(name = "contrasena", nullable = false)
     private String contrasena;
 
-
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "usuario_perfil",
+            name = "usuario_rol",
             joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "perfil_id")
+            inverseJoinColumns = @JoinColumn(name = "rol_id")
     )
-    private Set<Perfil> perfil = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "usuario_permiso",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "permiso_id")
-    )
-    private Set<Permiso> permiso = new HashSet<>();
+    private Set<Rol> roles = new HashSet<>();
 
 
-    public Set<Perfil> getPerfil() {
-        return perfil;
+    public Usuario(String email, String contrasena, Long createdBy) {
+        this.email = email;
+        this.contrasena = contrasena;
+        this.setCreatedBy(createdBy);
+        this.setUpdatedBy(createdBy);
+        this.setState(true); // Por defecto, el usuario está activo
     }
 
-    public void setPerfil(Set<Perfil> perfil) {
-        this.perfil = perfil;
-    }
+    public Usuario() {
 
-    public Set<Permiso> getPermiso() {
-        return permiso;
-    }
-
-    public void setPermiso(Set<Permiso> permiso) {
-        this.permiso = permiso;
-    }
-
-    public String getContrasena() {
-        return contrasena;
     }
 
     public String getEmail() {
@@ -61,9 +44,19 @@ public class Usuario extends AbaseEntity{
         this.email = email;
     }
 
+    public String getContrasena() {
+        return contrasena;
+    }
+
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
 
+    public Set<Rol> getRoles() {
+        return roles;
+    }
 
+    public void setRoles(Set<Rol> roles) {
+        this.roles = roles;
+    }
 }

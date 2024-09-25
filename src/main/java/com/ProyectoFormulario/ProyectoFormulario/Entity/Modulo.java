@@ -1,10 +1,9 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -14,8 +13,22 @@ public class Modulo extends AbaseEntity{
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @ManyToMany(mappedBy = "modulos")
-    private Set<Perfil> perfiles;
+    @ManyToMany(mappedBy = "modulos", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Rol> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "modulo", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Vista> Vistas = new HashSet<>();
+
+
+    public Set<Vista> getVistas() {
+        return Vistas;
+    }
+
+    public void setVistas(Set<Vista> vistas) {
+        Vistas = vistas;
+    }
 
     public String getNombre() {
         return nombre;
@@ -25,11 +38,11 @@ public class Modulo extends AbaseEntity{
         this.nombre = nombre;
     }
 
-    public Set<Perfil> getPerfiles() {
-        return perfiles;
+    public Set<Rol> getRoles() {
+        return roles;
     }
 
-    public void setPerfiles(Set<Perfil> perfiles) {
-        this.perfiles = perfiles;
+    public void setRoles(Set<Rol> roles) {
+        this.roles = roles;
     }
 }

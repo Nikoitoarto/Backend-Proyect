@@ -1,23 +1,19 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
-
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.Set;
 
 @Entity
 @Table (name = "vista")
 public class Vista extends AbaseEntity{
 
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre")
     private String nombre;
 
-    @ManyToOne
-    @JoinColumn(name = "modulo_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "modulo_id")
     private Modulo modulo;
-
-    @ManyToMany(mappedBy = "vistas")
-    private Set<Perfil> perfiles;
 
     public String getNombre() {
         return nombre;
@@ -35,11 +31,5 @@ public class Vista extends AbaseEntity{
         this.modulo = modulo;
     }
 
-    public Set<Perfil> getPerfiles() {
-        return perfiles;
-    }
 
-    public void setPerfiles(Set<Perfil> perfiles) {
-        this.perfiles = perfiles;
-    }
 }

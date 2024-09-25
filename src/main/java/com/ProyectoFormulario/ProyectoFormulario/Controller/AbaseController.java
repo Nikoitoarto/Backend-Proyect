@@ -1,23 +1,29 @@
 package com.ProyectoFormulario.ProyectoFormulario.Controller;
 
+import ch.qos.logback.classic.Logger;
 import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDTO;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.AbaseEntity;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IAbaseService;
+import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
-//http://localhost:9000/electiva-ii/swagger-ui/index.html#/
+import java.util.List;
 public abstract class AbaseController<T extends AbaseEntity, S extends IAbaseService<T>> {
+
+    private static final Logger log = (Logger) LoggerFactory.getLogger(AbaseController.class);
     protected S service;
     protected String entityName;
+
     protected AbaseController(S service, String entityName) {
         this.service = service;
         this.entityName = entityName;
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<ApiResponseDTO<List<T>>> findByStateTrue() {
         try {
             return ResponseEntity.ok(new ApiResponseDTO<List<T>>("Datos obtenidos", service.findByStateTrue(), true));
@@ -28,15 +34,23 @@ public abstract class AbaseController<T extends AbaseEntity, S extends IAbaseSer
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponseDTO<T>> show(@PathVariable Long id) {
+
         try {
             T entity = service.findById(id);
-            return ResponseEntity.ok(new ApiResponseDTO<T>("Registro encontrado", entity, true));
+            return ResponseEntity.ok(new ApiResponseDTO<>("Registro encontrado", entity, true));
+        } catch (EntityNotFoundException e) {
+            log.error("Entidad no encontrada: {}", id, e);
+            return ResponseEntity.notFound().build();
+        } catch (DataIntegrityViolationException e) {
+            log.error("Violación de integridad de datos: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(new ApiResponseDTO<>("Error de integridad de datos", null, false));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(new ApiResponseDTO<T>(e.getMessage(), null, false));
+            log.error("Error inesperado: {}", e.getMessage(), e);
+            return ResponseEntity.internalServerError().body(new ApiResponseDTO<>("Error interno del servidor", null, false));
         }
     }
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<ApiResponseDTO<T>> save(@RequestBody T entity) {
         try {
             return ResponseEntity.ok(new ApiResponseDTO<T>("Datos guardados", service.save(entity), true));

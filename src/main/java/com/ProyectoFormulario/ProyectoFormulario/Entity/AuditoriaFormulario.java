@@ -27,13 +27,8 @@ public class AuditoriaFormulario extends AbaseEntity{
         Revisado,
     }
 
-
     @OneToMany(mappedBy = "auditoriaFormulario", cascade = CascadeType.ALL)
     private Set<RevisionFormulario> revisiones;
-
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "formulario_id", nullable = false)
-    private Formulario formulario;
 
 
     public Set<RevisionFormulario> getRevisiones() {
@@ -68,11 +63,5 @@ public class AuditoriaFormulario extends AbaseEntity{
         this.estadoAuditoria = estadoAuditoria;
     }
 
-    public Formulario getFormulario() {
-        return formulario;
-    }
 
-    public void setFormulario(Formulario formulario) {
-        this.formulario = formulario;
-    }
 }

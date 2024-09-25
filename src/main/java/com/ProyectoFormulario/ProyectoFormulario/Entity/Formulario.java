@@ -1,7 +1,6 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
 import jakarta.persistence.*;
-import org.springframework.data.history.Revision;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,9 +13,6 @@ public class Formulario extends AbaseEntity{
 
     @Column(name = "fecha_formulario", length = 50, nullable = false)
     private LocalDateTime fechaFormulario;
-
-    @Column(name = "estado", length = 50, nullable = false)
-    private String estado;
 
     @Column(name = "nombre_profesor", length = 100, nullable = false)
     private String nombreProfesor;
@@ -33,21 +29,54 @@ public class Formulario extends AbaseEntity{
     @Column(name = "total_horas", nullable = false)
     private Integer totalHoras;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false)
+    private EstadoFormulario estado;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    // Otros atributos y métodos...
+
+    public enum EstadoFormulario {
+        DILIGENCIADO,
+        REVISADO_POR_DIRECCION_PROGRAMA,
+        REVISADO_POR_DECANO,
+        LISTO_PARA_VICERRECTORIA,
+        APROBADO
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "formulario_id")
     private List<AsignaturaDocencia> asignaturas;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "formulario_id")
     private List<Actividades> actividades;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "docente_id", nullable = false)
-    private Docente docente;
+    @JoinColumn(name = "rol_id", nullable = false)
+    private Rol rol;
 
     @OneToMany(mappedBy = "formulario", cascade = CascadeType.ALL)
     private Set<RevisionFormulario> revisiones;
+
+
+    // Métodos para agregar asignaturas y actividades
+    public void addAsignatura(AsignaturaDocencia asignatura) {
+        asignaturas.add(asignatura);
+        asignatura.setFormulario(this);
+    }
+
+    public void addActividad(Actividades actividad) {
+        actividades.add(actividad);
+        actividad.setFormulario(this);
+    }
+
+    public EstadoFormulario getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoFormulario estado) {
+        this.estado = estado;
+    }
 
     public Set<RevisionFormulario> getRevisiones() {
         return revisiones;
@@ -57,12 +86,12 @@ public class Formulario extends AbaseEntity{
         this.revisiones = revisiones;
     }
 
-    public Docente getDocente() {
-        return docente;
+    public Rol getRol() {
+        return rol;
     }
 
-    public void setDocente(Docente docente) {
-        this.docente = docente;
+    public void setRol(Rol rol) {
+        this.rol = rol;
     }
 
     public List<AsignaturaDocencia> getAsignaturas() {
@@ -97,13 +126,6 @@ public class Formulario extends AbaseEntity{
         this.fechaFormulario = fechaFormulario;
     }
 
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
 
     public String getNombreProfesor() {
         return nombreProfesor;

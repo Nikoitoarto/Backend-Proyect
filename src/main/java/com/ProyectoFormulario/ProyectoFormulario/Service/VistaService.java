@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 public class VistaService extends ABaseService<Vista> implements IVistaService {
 
 
+    @Autowired
+    private IAbaseRepository<Vista, Long> repository; // Inyecta tu repositorio específico
+
     @Override
     protected IAbaseRepository<Vista, Long> getRepository() {
-        return repository;
+        return repository; // Retorna el repositorio correcto
     }
-
-    @Autowired
-    private IAbaseRepository<Vista, Long> repository;
 }

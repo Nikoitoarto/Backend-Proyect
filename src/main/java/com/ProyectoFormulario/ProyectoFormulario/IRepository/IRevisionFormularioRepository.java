@@ -1,7 +1,10 @@
 package com.ProyectoFormulario.ProyectoFormulario.IRepository;
 
-import org.springframework.data.history.Revision;
+import com.ProyectoFormulario.ProyectoFormulario.Entity.RevisionFormulario;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface IRevisionFormularioRepository extends JpaRepository<Revision, Long> {
+@Repository
+public interface IRevisionFormularioRepository extends JpaRepository<RevisionFormulario, Long> {
+
 }

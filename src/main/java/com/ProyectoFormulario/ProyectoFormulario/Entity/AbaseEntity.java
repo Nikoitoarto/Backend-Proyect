@@ -1,34 +1,40 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+
+
 @MappedSuperclass
- public  abstract class  AbaseEntity{
+public  abstract class  AbaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "state", nullable = false)
+    @Column(name = "state")
     private Boolean state;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @Column(name = "update_at", nullable = false)
-    private LocalDateTime update_at;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    @Column(name = "deleted_at", nullable = false)
-    private LocalDateTime delete_at;
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
-    @Column(name = "created_by", nullable = false)
-    private Long created_by;
+    @Column(name = "created_by")
+    private Long createdBy;
 
-    @Column(name = "update_by", nullable = false)
-    private Long update_by;
+    @Column(name = "updated_by")
+    private Long updatedBy;
 
-    @Column(name = "delete_by", nullable = false)
-    private Long delete_by;
+    @Column(name = "deleted_by")
+    private Long deletedBy;
 
     public Long getId() {
         return id;
@@ -46,52 +52,52 @@ import java.time.LocalDateTime;
         this.state = state;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdate_at() {
-        return update_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdate_at(LocalDateTime update_at) {
-        this.update_at = update_at;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public LocalDateTime getDelete_at() {
-        return delete_at;
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
     }
 
-    public void setDelete_at(LocalDateTime delete_at) {
-        this.delete_at = delete_at;
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
-    public Long getCreated_by() {
-        return created_by;
+    public Long getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreated_by(Long created_by) {
-        this.created_by = created_by;
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
     }
 
-    public Long getUpdate_by() {
-        return update_by;
+    public Long getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setUpdate_by(Long update_by) {
-        this.update_by = update_by;
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
-    public Long getDelete_by() {
-        return delete_by;
+    public Long getDeletedBy() {
+        return deletedBy;
     }
 
-    public void setDelete_by(Long delete_by) {
-        this.delete_by = delete_by;
+    public void setDeletedBy(Long deletedBy) {
+        this.deletedBy = deletedBy;
     }
 }
 

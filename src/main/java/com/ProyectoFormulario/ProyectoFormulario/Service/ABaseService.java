@@ -3,7 +3,9 @@ package com.ProyectoFormulario.ProyectoFormulario.Service;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.AbaseEntity;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IAbaseRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IAbaseService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,21 +16,21 @@ public abstract class ABaseService<T extends AbaseEntity> implements IAbaseServi
     protected abstract IAbaseRepository<T, Long> getRepository();
 
     @Override
-    public List<T> all(){
+    public List<T> all() {
         return getRepository().findAll();
     }
 
     @Override
-    public List<T> findByStateTrue(){
+    public List<T> findByStateTrue() {
         return getRepository().findAll();
     }
 
     @Override
-    public T findById(Long id) throws Exception{
+    public T findById(Long id) throws Exception {
         Optional<T> op = getRepository().findById(id);
 
         if (op.isEmpty()) {
-            throw new Exception("Registro no encontrado");
+            throw new EntityNotFoundException("Registro no encontrado con ID: " + id);
         }
 
         return op.get();
@@ -36,35 +38,35 @@ public abstract class ABaseService<T extends AbaseEntity> implements IAbaseServi
 
     @Override
     public T save(T entity) throws Exception{
-        try{
-            entity.setCreated_at(LocalDateTime.now());
+        try {
+            entity.setCreatedAt(LocalDateTime.now());
             return getRepository().save(entity);
-        }catch(Exception e){
+        } catch (Exception e) {
+            // Captura la excepción
             throw new Exception("Error al guardar la entidad: " + e.getMessage());
         }
     }
 
     @Override
-    public void update(Long id, T entity) throws Exception{
+    public void update(Long id, T entity) throws Exception {
         Optional<T> op = getRepository().findById(id);
 
         if (op.isEmpty()) {
             throw new Exception("Registro no encontrado");
-        } else if (op.get().getDelete_at() != null) {
+        }else if(op.get().getDeletedAt() != null) {
             throw new Exception("Registro inhabilitado");
-
         }
 
         T entityUpdate = op.get();
 
-        String[] ignoreProperties = {"id", "createdAt", "deletedAt"};
-        BeanUtils.copyProperties(entity, entityUpdate, ignoreProperties);
-        entityUpdate.setUpdate_at(LocalDateTime.now());
+        String[] ignoreProperties = {"id","createdAt","deleteAt"};
+        BeanUtils.copyProperties(entity, entityUpdate,ignoreProperties);
+        entityUpdate.setUpdatedAt(LocalDateTime.now());
         getRepository().save(entityUpdate);
     }
 
     @Override
-    public void delete(Long id) throws Exception{
+    public void delete(Long id) throws Exception {
         Optional<T> op = getRepository().findById(id);
 
         if (op.isEmpty()) {
@@ -72,9 +74,8 @@ public abstract class ABaseService<T extends AbaseEntity> implements IAbaseServi
         }
 
         T entityUpdate = op.get();
-        entityUpdate.setDelete_at(LocalDateTime.now());
+        entityUpdate.setDeletedAt(LocalDateTime.now());
 
         getRepository().save(entityUpdate);
     }
-
 }
