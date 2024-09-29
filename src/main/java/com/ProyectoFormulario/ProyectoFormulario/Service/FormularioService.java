@@ -2,7 +2,7 @@ package com.ProyectoFormulario.ProyectoFormulario.Service;
 
 
 import com.ProyectoFormulario.ProyectoFormulario.Entity.*;
-import com.ProyectoFormulario.ProyectoFormulario.IRepository.IAbaseRepository;
+import com.ProyectoFormulario.ProyectoFormulario.IRepository.IBaseRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IFormularioRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IFormularioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
     }
 
     @Override
-    protected IAbaseRepository<Formulario, Long> getRepository() {
+    protected IBaseRepository<Formulario, Long> getRepository() {
         return null;
     }
 

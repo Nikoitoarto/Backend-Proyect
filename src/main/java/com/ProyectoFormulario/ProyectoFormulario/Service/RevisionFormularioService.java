@@ -5,7 +5,7 @@ package com.ProyectoFormulario.ProyectoFormulario.Service;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Formulario;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Rol;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.RevisionFormulario;
-import com.ProyectoFormulario.ProyectoFormulario.IRepository.IAbaseRepository;
+import com.ProyectoFormulario.ProyectoFormulario.IRepository.IBaseRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IRevisionFormularioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +18,10 @@ public class RevisionFormularioService extends ABaseService<RevisionFormulario> 
 
 
     @Autowired
-    private IAbaseRepository<RevisionFormulario, Long> repository; // Inyecta tu repositorio específico
+    private IBaseRepository<RevisionFormulario, Long> repository; // Inyecta tu repositorio específico
 
     @Override
-    protected IAbaseRepository<RevisionFormulario, Long> getRepository() {
+    protected IBaseRepository<RevisionFormulario, Long> getRepository() {
         return repository; // Retorna el repositorio correcto
     }
 

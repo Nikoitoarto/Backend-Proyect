@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface IAuditoriaFormularioRepository extends IAbaseRepository<AuditoriaFormulario, Long>{
+public interface IAuditoriaFormularioRepository extends IBaseRepository<AuditoriaFormulario, Long>{
 }

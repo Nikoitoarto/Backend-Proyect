@@ -2,7 +2,7 @@ package com.ProyectoFormulario.ProyectoFormulario.IService;
 
 import com.ProyectoFormulario.ProyectoFormulario.Entity.*;
 
-public interface IFormularioService extends IAbaseService<Formulario> {
+public interface IFormularioService extends IBaseService<Formulario> {
 
     Formulario crearFormulario(Formulario formulario);
     void diligenciarFormulario(Formulario formulario, Usuario usuario, AsignaturaDocencia asignatura, Actividades actividad) throws Exception;

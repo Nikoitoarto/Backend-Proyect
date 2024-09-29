@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "revision_formulario")
-public class RevisionFormulario extends AbaseEntity {
+public class RevisionFormulario extends ABaseEntity {
 
     @Column(name = "fecha_revision", nullable = false)
     private LocalDateTime fechaRevision;

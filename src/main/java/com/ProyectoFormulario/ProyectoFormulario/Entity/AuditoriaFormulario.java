@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "auditoria_formulario")
-public class AuditoriaFormulario extends AbaseEntity{
+public class AuditoriaFormulario extends ABaseEntity{
 
 
     @Column(name = "fecha_accion", nullable = false)

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/rol")
-public class RolController extends AbaseController<Rol, IRolService> {
+public class RolController extends ABaseController<Rol, IRolService> {
     public RolController(IRolService service) {
-        super(service, "perfil");
+        super(service, "Rol");
     }
 }

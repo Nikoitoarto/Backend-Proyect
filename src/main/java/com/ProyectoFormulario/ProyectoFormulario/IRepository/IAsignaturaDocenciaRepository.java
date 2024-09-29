@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface IAsignaturaDocenciaRepository extends IAbaseRepository<AsignaturaDocencia, Long>{
+public interface IAsignaturaDocenciaRepository extends IBaseRepository<AsignaturaDocencia, Long>{
 }

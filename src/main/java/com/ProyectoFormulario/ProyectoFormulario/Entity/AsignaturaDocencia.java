@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "asignatura_docencia")
-public class AsignaturaDocencia extends AbaseEntity{
+public class AsignaturaDocencia extends ABaseEntity{
 
     @Column(name = "nombre_asignatura", nullable = false)
     private String nombre_asignatura;

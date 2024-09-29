@@ -1,8 +1,8 @@
 package com.ProyectoFormulario.ProyectoFormulario.Service;
 
-import com.ProyectoFormulario.ProyectoFormulario.Entity.AbaseEntity;
-import com.ProyectoFormulario.ProyectoFormulario.IRepository.IAbaseRepository;
-import com.ProyectoFormulario.ProyectoFormulario.IService.IAbaseService;
+import com.ProyectoFormulario.ProyectoFormulario.Entity.ABaseEntity;
+import com.ProyectoFormulario.ProyectoFormulario.IRepository.IBaseRepository;
+import com.ProyectoFormulario.ProyectoFormulario.IService.IBaseService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 
@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class ABaseService<T extends AbaseEntity> implements IAbaseService<T> {
+public abstract class ABaseService<T extends ABaseEntity> implements IBaseService<T> {
 
-    protected abstract IAbaseRepository<T, Long> getRepository();
+    protected abstract IBaseRepository<T, Long> getRepository();
 
     @Override
     public List<T> all() {
@@ -30,7 +30,7 @@ public abstract class ABaseService<T extends AbaseEntity> implements IAbaseServi
         Optional<T> op = getRepository().findById(id);
 
         if (op.isEmpty()) {
-            throw new EntityNotFoundException("Registro no encontrado con ID: " + id);
+            throw new Exception("Registro no encontrado");
         }
 
         return op.get();
@@ -39,10 +39,11 @@ public abstract class ABaseService<T extends AbaseEntity> implements IAbaseServi
     @Override
     public T save(T entity) throws Exception{
         try {
+
+            entity.setCreatedBy(1L);
             entity.setCreatedAt(LocalDateTime.now());
             return getRepository().save(entity);
         } catch (Exception e) {
-            // Captura la excepción
             throw new Exception("Error al guardar la entidad: " + e.getMessage());
         }
     }
@@ -59,8 +60,9 @@ public abstract class ABaseService<T extends AbaseEntity> implements IAbaseServi
 
         T entityUpdate = op.get();
 
-        String[] ignoreProperties = {"id","createdAt","deleteAt"};
+        String[] ignoreProperties = {"id","createdAt","deleteAt","createdBy","deletedBy"};
         BeanUtils.copyProperties(entity, entityUpdate,ignoreProperties);
+        entityUpdate.setUpdatedBy(2L);
         entityUpdate.setUpdatedAt(LocalDateTime.now());
         getRepository().save(entityUpdate);
     }
@@ -74,6 +76,7 @@ public abstract class ABaseService<T extends AbaseEntity> implements IAbaseServi
         }
 
         T entityUpdate = op.get();
+        entityUpdate.setDeletedBy(3L);
         entityUpdate.setDeletedAt(LocalDateTime.now());
 
         getRepository().save(entityUpdate);

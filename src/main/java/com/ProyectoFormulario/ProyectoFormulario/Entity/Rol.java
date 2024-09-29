@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "rol")
-public class Rol extends AbaseEntity {
+public class Rol extends ABaseEntity {
 
     @Column(name = "nombre_rol", nullable = false)
     private String nombreRol;

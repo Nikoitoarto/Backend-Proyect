@@ -2,8 +2,7 @@ package com.ProyectoFormulario.ProyectoFormulario.Service;
 
 
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Rol;
-import com.ProyectoFormulario.ProyectoFormulario.Entity.Usuario;
-import com.ProyectoFormulario.ProyectoFormulario.IRepository.IAbaseRepository;
+import com.ProyectoFormulario.ProyectoFormulario.IRepository.IBaseRepository;
 
 import com.ProyectoFormulario.ProyectoFormulario.IService.IRolService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,10 @@ public class RolService extends ABaseService<Rol> implements IRolService {
 
 
     @Autowired
-    private IAbaseRepository<Rol, Long> repository; // Inyecta tu repositorio específico
+    private IBaseRepository<Rol, Long> repository; // Inyecta tu repositorio específico
 
     @Override
-    protected IAbaseRepository<Rol, Long> getRepository() {
+    protected IBaseRepository<Rol, Long> getRepository() {
         return repository; // Retorna el repositorio correcto
     }
     @Override

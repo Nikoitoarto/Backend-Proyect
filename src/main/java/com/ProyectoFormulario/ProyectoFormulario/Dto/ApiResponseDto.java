@@ -1,13 +1,12 @@
 package com.ProyectoFormulario.ProyectoFormulario.Dto;
 
-
-public class ApiResponseDTO<T> {
+public class ApiResponseDto<T> {
     private Boolean status;
     private T data;
     private String message;
-    public ApiResponseDTO() {
+    public ApiResponseDto() {
     }
-    public ApiResponseDTO(String message, T data, Boolean status) {
+    public ApiResponseDto(String message, T data, Boolean status) {
         this.message = message;
         this.data = data;
         this.status = status;

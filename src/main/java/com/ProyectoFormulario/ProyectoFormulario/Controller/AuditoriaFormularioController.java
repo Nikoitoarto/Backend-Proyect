@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/auditoriaFormulario")
-public class AuditoriaFormularioController extends AbaseController<AuditoriaFormulario, IAuditoriaFormularioService> {
+public class AuditoriaFormularioController extends ABaseController<AuditoriaFormulario, IAuditoriaFormularioService> {
     public AuditoriaFormularioController(IAuditoriaFormularioService service) {
-        super(service, "auditoriaFormulario");
+        super(service, "AuditoriaFormulario");
     }
 }

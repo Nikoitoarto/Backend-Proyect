@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario extends AbaseEntity{
+public class Usuario extends ABaseEntity{
 
     @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;

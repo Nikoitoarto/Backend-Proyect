@@ -4,5 +4,5 @@ import com.ProyectoFormulario.ProyectoFormulario.Entity.Formulario;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IFormularioRepository extends IAbaseRepository<Formulario, Long>{
+public interface IFormularioRepository extends IBaseRepository<Formulario, Long>{
 }

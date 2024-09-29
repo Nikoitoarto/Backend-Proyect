@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "modulo")
-public class Modulo extends AbaseEntity{
+public class Modulo extends ABaseEntity{
 
     @Column(name = "nombre", nullable = false)
     private String nombre;

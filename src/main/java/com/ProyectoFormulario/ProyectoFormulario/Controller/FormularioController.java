@@ -1,6 +1,6 @@
 package com.ProyectoFormulario.ProyectoFormulario.Controller;
 
-import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDTO;
+import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDto;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Formulario;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Usuario;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.AsignaturaDocencia;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/formulario")
 @CrossOrigin(origins = "*")
-public class FormularioController extends AbaseController<Formulario, IFormularioService> {
+public class FormularioController extends ABaseController<Formulario, IFormularioService> {
 
     @Autowired
     private IUsuarioService usuarioService; // Servicio para Usuario
@@ -33,7 +33,7 @@ public class FormularioController extends AbaseController<Formulario, IFormulari
     }
 
     @PutMapping("/diligenciar")
-    public ResponseEntity<ApiResponseDTO<Void>> diligenciarFormulario(
+    public ResponseEntity<ApiResponseDto<Void>> diligenciarFormulario(
             @RequestBody Formulario formulario,
             @RequestParam Long usuarioId,
             @RequestParam Long asignaturaId,
@@ -44,35 +44,35 @@ public class FormularioController extends AbaseController<Formulario, IFormulari
             Actividades actividad = actividadService.findById(actividadId); // Obtener Actividad
 
             service.diligenciarFormulario(formulario, usuario, asignatura, actividad);
-            return ResponseEntity.ok(new ApiResponseDTO<>("Formulario diligenciado", null, true));
+            return ResponseEntity.ok(new ApiResponseDto<>("Formulario diligenciado", null, true));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(new ApiResponseDTO<>(e.getMessage(), null, false));
+            return ResponseEntity.internalServerError().body(new ApiResponseDto<>(e.getMessage(), null, false));
         }
     }
 
     @PutMapping("/revisar")
-    public ResponseEntity<ApiResponseDTO<Void>> revisarFormulario(
+    public ResponseEntity<ApiResponseDto<Void>> revisarFormulario(
             @RequestBody Formulario formulario,
             @RequestParam Long usuarioId) {
         try {
             Usuario usuario = usuarioService.findById(usuarioId); // Obtener Usuario
             service.revisarFormulario(formulario, usuario);
-            return ResponseEntity.ok(new ApiResponseDTO<>("Formulario revisado", null, true));
+            return ResponseEntity.ok(new ApiResponseDto<>("Formulario revisado", null, true));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(new ApiResponseDTO<>(e.getMessage(), null, false));
+            return ResponseEntity.internalServerError().body(new ApiResponseDto<>(e.getMessage(), null, false));
         }
     }
 
     @PutMapping("/procesar")
-    public ResponseEntity<ApiResponseDTO<Void>> procesarFormulario(
+    public ResponseEntity<ApiResponseDto<Void>> procesarFormulario(
             @RequestBody Formulario formulario,
             @RequestParam Long usuarioId) {
         try {
             Usuario usuario = usuarioService.findById(usuarioId); // Obtener Usuario
             service.procesarFormulario(formulario, usuario);
-            return ResponseEntity.ok(new ApiResponseDTO<>("Formulario procesado", null, true));
+            return ResponseEntity.ok(new ApiResponseDto<>("Formulario procesado", null, true));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(new ApiResponseDTO<>(e.getMessage(), null, false));
+            return ResponseEntity.internalServerError().body(new ApiResponseDto<>(e.getMessage(), null, false));
         }
     }
 }

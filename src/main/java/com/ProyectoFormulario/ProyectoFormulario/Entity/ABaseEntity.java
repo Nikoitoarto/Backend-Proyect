@@ -1,39 +1,33 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
+
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
-
-
 @MappedSuperclass
-public  abstract class  AbaseEntity {
+public abstract class ABaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "state")
+    @Column(name = "state", nullable = false)
     private Boolean state;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = true)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = true)
     private LocalDateTime updatedAt;
 
-    @Column(name = "deleted_at")
+    @Column(name = "deleted_at", nullable = true)
     private LocalDateTime deletedAt;
 
-    @Column(name = "created_by")
+    @Column(name = "created_by", nullable = true)
     private Long createdBy;
 
-    @Column(name = "updated_by")
+    @Column(name = "updated_by", nullable = true)
     private Long updatedBy;
 
-    @Column(name = "deleted_by")
+    @Column(name = "deleted_by", nullable = true)
     private Long deletedBy;
 
     public Long getId() {
@@ -100,5 +94,3 @@ public  abstract class  AbaseEntity {
         this.deletedBy = deletedBy;
     }
 }
-
-

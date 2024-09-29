@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "formulario")
-public class Formulario extends AbaseEntity{
+public class Formulario extends ABaseEntity{
 
     @Column(name = "fecha_formulario", length = 50, nullable = false)
     private LocalDateTime fechaFormulario;

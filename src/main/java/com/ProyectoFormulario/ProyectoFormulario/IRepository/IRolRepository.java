@@ -7,6 +7,6 @@ import java.util.List;
 
 
 @Repository
-public interface IRolRepository extends IAbaseRepository<Rol, Long> {
+public interface IRolRepository extends IBaseRepository<Rol, Long> {
      List<Rol> findByTipoRol(Rol.TipoRol tipoRol);
 }
