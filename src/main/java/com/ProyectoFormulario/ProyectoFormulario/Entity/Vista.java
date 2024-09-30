@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @Table (name = "vista")
 public class Vista extends ABaseEntity{
 
-    @Column(name = "nombre")
+    @Column(name = "nombre", nullable = false, length = 50)
     private String nombre;
 
     @ManyToOne(fetch = FetchType.LAZY)

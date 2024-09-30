@@ -5,7 +5,9 @@ package com.ProyectoFormulario.ProyectoFormulario.Service;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Formulario;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Rol;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.RevisionFormulario;
+import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoRevision;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IBaseRepository;
+import com.ProyectoFormulario.ProyectoFormulario.IRepository.IRevisionFormularioRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IRevisionFormularioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ public class RevisionFormularioService extends ABaseService<RevisionFormulario> 
 
 
     @Autowired
-    private IBaseRepository<RevisionFormulario, Long> repository; // Inyecta tu repositorio específico
+    private IRevisionFormularioRepository repository; // Inyecta tu repositorio específico
 
     @Override
     protected IBaseRepository<RevisionFormulario, Long> getRepository() {
@@ -38,7 +40,7 @@ public class RevisionFormularioService extends ABaseService<RevisionFormulario> 
     }
 
     @Override
-    public RevisionFormulario.EstadoRevision obtenerEstadoRevision(Long revisionId) throws Exception {
+    public EstadoRevision obtenerEstadoRevision(Long revisionId) throws Exception {
         RevisionFormulario revision = findById(revisionId);
         return revision.getEstadoRevision();
     }

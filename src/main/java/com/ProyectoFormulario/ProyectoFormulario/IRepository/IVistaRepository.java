@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface IVistaRepository extends JpaRepository<Vista, Long> {
+public interface IVistaRepository extends IBaseRepository<Vista, Long> {
 }

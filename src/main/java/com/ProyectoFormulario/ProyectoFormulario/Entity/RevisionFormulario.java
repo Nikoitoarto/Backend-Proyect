@@ -1,6 +1,7 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
 
+import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoRevision;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -31,13 +32,6 @@ public class RevisionFormulario extends ABaseEntity {
     @ManyToOne
     @JoinColumn(name = "auditoriaFormulario_id", nullable = true)
     private AuditoriaFormulario auditoriaFormulario;
-
-    public enum EstadoRevision {
-        PENDIENTE,
-        APROBADO,
-        RECHAZADO,
-        EN_PROGRESO
-    }
 
     public LocalDateTime getFechaRevision() {
         return fechaRevision;

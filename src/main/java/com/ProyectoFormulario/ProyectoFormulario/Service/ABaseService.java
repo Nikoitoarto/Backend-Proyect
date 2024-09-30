@@ -39,7 +39,6 @@ public abstract class ABaseService<T extends ABaseEntity> implements IBaseServic
     @Override
     public T save(T entity) throws Exception{
         try {
-
             entity.setCreatedBy(1L);
             entity.setCreatedAt(LocalDateTime.now());
             return getRepository().save(entity);

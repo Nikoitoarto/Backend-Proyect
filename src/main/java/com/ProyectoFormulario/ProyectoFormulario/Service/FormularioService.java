@@ -2,6 +2,8 @@ package com.ProyectoFormulario.ProyectoFormulario.Service;
 
 
 import com.ProyectoFormulario.ProyectoFormulario.Entity.*;
+import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoFormulario;
+import com.ProyectoFormulario.ProyectoFormulario.Enum.TipoRol;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IBaseRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IFormularioRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IFormularioService;
@@ -28,8 +30,8 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
 
     @Override
     public void diligenciarFormulario(Formulario formulario, Usuario usuario, AsignaturaDocencia asignatura, Actividades actividad) throws Exception {
-        if (usuario.getRoles().stream().anyMatch(p -> p.getTipoRol() == Rol.TipoRol.Docente)) {
-            formulario.setEstado(Formulario.EstadoFormulario.DILIGENCIADO);
+        if (usuario.getRoles().stream().anyMatch(p -> p.getTipoRol() == TipoRol.Docente)) {
+            formulario.setEstado(EstadoFormulario.DILIGENCIADO);
             formulario.addAsignatura(asignatura);
             formulario.addActividad(actividad);
             formularioRepository.save(formulario);
@@ -41,11 +43,11 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
     @Override
     public void revisarFormulario(Formulario formulario, Usuario usuario) throws Exception {
         for (Rol rol : usuario.getRoles()) {
-            if (rol.getTipoRol() == Rol.TipoRol.DireccionPrograma) {
-                formulario.setEstado(Formulario.EstadoFormulario.REVISADO_POR_DIRECCION_PROGRAMA);
+            if (rol.getTipoRol() == TipoRol.DireccionPrograma) {
+                formulario.setEstado(EstadoFormulario.REVISADO_POR_DIRECCION_PROGRAMA);
                 return;
-            } else if (rol.getTipoRol() == Rol.TipoRol.Decano) {
-                formulario.setEstado(Formulario.EstadoFormulario.REVISADO_POR_DECANO);
+            } else if (rol.getTipoRol() == TipoRol.Decano) {
+                formulario.setEstado(EstadoFormulario.REVISADO_POR_DECANO);
                 return;
             }
         }
@@ -55,12 +57,12 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
     @Override
     public void procesarFormulario(Formulario formulario, Usuario usuario) throws Exception {
         for (Rol rol : usuario.getRoles()) {
-            if (formulario.getEstado() == Formulario.EstadoFormulario.DILIGENCIADO && rol.getTipoRol() == Rol.TipoRol.Decano) {
+            if (formulario.getEstado() == EstadoFormulario.DILIGENCIADO && rol.getTipoRol() == TipoRol.Decano) {
                 revisarFormulario(formulario, usuario);
-                formulario.setEstado(Formulario.EstadoFormulario.LISTO_PARA_VICERRECTORIA);
+                formulario.setEstado(EstadoFormulario.LISTO_PARA_VICERRECTORIA);
                 return;
-            } else if (formulario.getEstado() == Formulario.EstadoFormulario.LISTO_PARA_VICERRECTORIA && rol.getTipoRol() == Rol.TipoRol.Vicerrectoria) {
-                formulario.setEstado(Formulario.EstadoFormulario.APROBADO);
+            } else if (formulario.getEstado() == EstadoFormulario.LISTO_PARA_VICERRECTORIA && rol.getTipoRol() == TipoRol.Vicerrectoria) {
+                formulario.setEstado(EstadoFormulario.APROBADO);
                 return;
             }
         }

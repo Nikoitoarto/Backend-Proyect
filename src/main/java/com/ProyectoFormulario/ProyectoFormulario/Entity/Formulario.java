@@ -1,5 +1,6 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
+import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoFormulario;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -32,16 +33,6 @@ public class Formulario extends ABaseEntity{
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
     private EstadoFormulario estado;
-
-    // Otros atributos y métodos...
-
-    public enum EstadoFormulario {
-        DILIGENCIADO,
-        REVISADO_POR_DIRECCION_PROGRAMA,
-        REVISADO_POR_DECANO,
-        LISTO_PARA_VICERRECTORIA,
-        APROBADO
-    }
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "formulario_id")
@@ -125,7 +116,6 @@ public class Formulario extends ABaseEntity{
     public void setFechaFormulario(LocalDateTime fechaFormulario) {
         this.fechaFormulario = fechaFormulario;
     }
-
 
     public String getNombreProfesor() {
         return nombreProfesor;

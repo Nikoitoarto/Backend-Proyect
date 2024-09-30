@@ -1,6 +1,7 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
 
+import com.ProyectoFormulario.ProyectoFormulario.Enum.TipoRol;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -17,14 +18,6 @@ public class Rol extends ABaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_rol", nullable = false)
     private TipoRol tipoRol;
-
-    public enum TipoRol {
-        Docente,
-        Decano,
-        Vicerrectoria,
-        DireccionPrograma,
-        AdministradorSistema
-    }
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     @JsonIgnore

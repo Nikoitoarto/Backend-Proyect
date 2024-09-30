@@ -2,6 +2,7 @@ package com.ProyectoFormulario.ProyectoFormulario.Controller;
 
 import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDto;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.RevisionFormulario;
+import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoRevision;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IRevisionFormularioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +33,9 @@ public class RevisionFormularioController extends ABaseController<RevisionFormul
         }
     }
     @GetMapping("/{id}/estado")
-    public ResponseEntity<ApiResponseDto<RevisionFormulario.EstadoRevision>> obtenerEstadoRevision(@PathVariable Long id) {
+    public ResponseEntity<ApiResponseDto<EstadoRevision>> obtenerEstadoRevision(@PathVariable Long id) {
         try {
-            RevisionFormulario.EstadoRevision estado = service.obtenerEstadoRevision(id);
+            EstadoRevision estado = service.obtenerEstadoRevision(id);
             return ResponseEntity.ok(new ApiResponseDto<>("Estado de revisión obtenido", estado, true));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ApiResponseDto<>(e.getMessage(), null, false));

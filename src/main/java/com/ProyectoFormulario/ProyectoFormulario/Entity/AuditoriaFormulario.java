@@ -1,5 +1,6 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
+import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoAuditoria;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -20,16 +21,8 @@ public class AuditoriaFormulario extends ABaseEntity{
     @Column(name = "estado_auditoria")
     private EstadoAuditoria estadoAuditoria;
 
-    public enum EstadoAuditoria{
-        Creado,
-        Modificado,
-        Enviado,
-        Revisado,
-    }
-
     @OneToMany(mappedBy = "auditoriaFormulario", cascade = CascadeType.ALL)
     private Set<RevisionFormulario> revisiones;
-
 
     public Set<RevisionFormulario> getRevisiones() {
         return revisiones;

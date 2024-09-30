@@ -11,6 +11,7 @@ public class ApiResponseDto<T> {
         this.data = data;
         this.status = status;
     }
+
     public Boolean getStatus() {
         return status;
     }

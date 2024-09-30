@@ -1,7 +1,9 @@
 package com.ProyectoFormulario.ProyectoFormulario.Service;
 
 import com.ProyectoFormulario.ProyectoFormulario.Entity.AuditoriaFormulario;
+import com.ProyectoFormulario.ProyectoFormulario.IRepository.IAuditoriaFormularioRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IBaseRepository;
+import com.ProyectoFormulario.ProyectoFormulario.IRepository.IFormularioRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IAuditoriaFormularioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,7 @@ public class AuditoriaFormularioService extends ABaseService<AuditoriaFormulario
 
 
     @Autowired
-    private IBaseRepository<AuditoriaFormulario, Long> repository; // Inyecta tu repositorio específico
+    private IAuditoriaFormularioRepository repository; // Inyecta tu repositorio específico
 
     @Override
     protected IBaseRepository<AuditoriaFormulario, Long> getRepository() {

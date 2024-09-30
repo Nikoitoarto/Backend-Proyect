@@ -1,6 +1,7 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
 
+import com.ProyectoFormulario.ProyectoFormulario.Enum.TipoActividades;
 import jakarta.persistence.*;
 
 @Entity
@@ -30,14 +31,8 @@ public class Actividades extends ABaseEntity{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_actividad")
-    private TipoActividad tipoActividad;
+    private TipoActividades tipoActividades;
 
-    public enum TipoActividad{
-        Academicas,
-        LaboresCientificas,
-        LaboresCulturales,
-        LaboresAdministrativas
-    }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "formulario_id", nullable = false)
@@ -107,13 +102,11 @@ public class Actividades extends ABaseEntity{
         this.totalHorasSemestre = totalHorasSemestre;
     }
 
-    public TipoActividad getTipoActividad() {
-        return tipoActividad;
+    public TipoActividades getTipoActividades() {
+        return tipoActividades;
     }
 
-    public void setTipoActividad(TipoActividad tipoActividad) {
-        this.tipoActividad = tipoActividad;
+    public void setTipoActividades(TipoActividades tipoActividades) {
+        this.tipoActividades = tipoActividades;
     }
-
-
 }

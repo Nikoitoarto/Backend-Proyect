@@ -23,19 +23,6 @@ public class Usuario extends ABaseEntity{
     )
     private Set<Rol> roles = new HashSet<>();
 
-
-    public Usuario(String email, String contrasena, Long createdBy) {
-        this.email = email;
-        this.contrasena = contrasena;
-        this.setCreatedBy(createdBy);
-        this.setUpdatedBy(createdBy);
-        this.setState(true); // Por defecto, el usuario está activo
-    }
-
-    public Usuario() {
-
-    }
-
     public String getEmail() {
         return email;
     }
