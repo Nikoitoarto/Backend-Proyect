@@ -1,8 +1,13 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
 @MappedSuperclass
 public abstract class ABaseEntity {
     @Id
@@ -30,67 +35,5 @@ public abstract class ABaseEntity {
     @Column(name = "deleted_by", nullable = true)
     private Long deletedBy;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Boolean getState() {
-        return state;
-    }
-
-    public void setState(Boolean state) {
-        this.state = state;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public LocalDateTime getDeletedAt() {
-        return deletedAt;
-    }
-
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
-
-    public Long getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(Long createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Long getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(Long updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public Long getDeletedBy() {
-        return deletedBy;
-    }
-
-    public void setDeletedBy(Long deletedBy) {
-        this.deletedBy = deletedBy;
-    }
 }

@@ -2,10 +2,14 @@ package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
 import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoAuditoria;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "auditoria_formulario")
 public class AuditoriaFormulario extends ABaseEntity{
@@ -24,37 +28,7 @@ public class AuditoriaFormulario extends ABaseEntity{
     @OneToMany(mappedBy = "auditoriaFormulario", cascade = CascadeType.ALL)
     private Set<RevisionFormulario> revisiones;
 
-    public Set<RevisionFormulario> getRevisiones() {
-        return revisiones;
-    }
 
-    public void setRevisiones(Set<RevisionFormulario> revisiones) {
-        this.revisiones = revisiones;
-    }
-
-    public LocalDate getFechaAccion() {
-        return fechaAccion;
-    }
-
-    public void setFechaAccion(LocalDate fechaAccion) {
-        this.fechaAccion = fechaAccion;
-    }
-
-    public String getResultado() {
-        return resultado;
-    }
-
-    public void setResultado(String resultado) {
-        this.resultado = resultado;
-    }
-
-    public EstadoAuditoria getEstadoAuditoria() {
-        return estadoAuditoria;
-    }
-
-    public void setEstadoAuditoria(EstadoAuditoria estadoAuditoria) {
-        this.estadoAuditoria = estadoAuditoria;
-    }
 
 
 }

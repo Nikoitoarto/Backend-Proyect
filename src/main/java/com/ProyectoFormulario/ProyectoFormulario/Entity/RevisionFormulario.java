@@ -3,9 +3,13 @@ package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
 import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoRevision;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "revision_formulario")
 public class RevisionFormulario extends ABaseEntity {
@@ -25,7 +29,7 @@ public class RevisionFormulario extends ABaseEntity {
     private Formulario formulario;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "perfil_id", nullable = false)
+    @JoinColumn(name = "rol_id", nullable = false)
     private Rol rolRevisor;
 
     // Relación con Auditoría (opcional si llevas un registro)
@@ -33,51 +37,5 @@ public class RevisionFormulario extends ABaseEntity {
     @JoinColumn(name = "auditoriaFormulario_id", nullable = true)
     private AuditoriaFormulario auditoriaFormulario;
 
-    public LocalDateTime getFechaRevision() {
-        return fechaRevision;
-    }
 
-    public void setFechaRevision(LocalDateTime fechaRevision) {
-        this.fechaRevision = fechaRevision;
-    }
-
-    public EstadoRevision getEstadoRevision() {
-        return estadoRevision;
-    }
-
-    public void setEstadoRevision(EstadoRevision estadoRevision) {
-        this.estadoRevision = estadoRevision;
-    }
-
-    public String getComentarioRevision() {
-        return comentarioRevision;
-    }
-
-    public void setComentarioRevision(String comentarioRevision) {
-        this.comentarioRevision = comentarioRevision;
-    }
-
-    public Formulario getFormulario() {
-        return formulario;
-    }
-
-    public void setFormulario(Formulario formulario) {
-        this.formulario = formulario;
-    }
-
-    public Rol getRolRevisor() {
-        return rolRevisor;
-    }
-
-    public void setRolRevisor(Rol rolRevisor) {
-        this.rolRevisor = rolRevisor;
-    }
-
-    public AuditoriaFormulario getAuditoriaFormulario() {
-        return auditoriaFormulario;
-    }
-
-    public void setAuditoriaFormulario(AuditoriaFormulario auditoriaFormulario) {
-        this.auditoriaFormulario = auditoriaFormulario;
-    }
 }

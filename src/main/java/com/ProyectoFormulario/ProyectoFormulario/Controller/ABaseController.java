@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 public abstract class ABaseController<T extends ABaseEntity, S extends IBaseService<T>> {
     protected S service;
     protected String entityName;
+
     protected ABaseController(S service, String entityName) {
         this.service = service;
         this.entityName = entityName;

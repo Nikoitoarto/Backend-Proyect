@@ -5,24 +5,26 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-
-@Setter
 @Getter
+@Setter
+@Table(name = "actividades_cientificas")
 @Entity
-@Table(name = "asignatura_docencia")
-public class AsignaturaDocencia extends ABaseEntity{
+public class ActividadesCientificas extends ABaseEntity{
 
-    @Column(name = "nombre_asignatura", nullable = false)
-    private String nombre_asignatura;
+    @Column(name = "actividad", nullable = false)
+    private String actividad;
 
-    @Column(name = "programa", nullable = false)
-    private String programa;
+    @Column(name = "dedicacion_horas_Semanales", nullable = false)
+    private Long dedicacionHorasSemanales;
 
-    @Column(name = "grupo", nullable = false)
-    private String grupo;
+    @Column(name = "dedicacion_horas_semestre", nullable = false)
+    private Long dedicacionHorasSemestre;
 
-    @Column(name = "sede", nullable = false)
-    private String sede;
+    @Column(name = "descripcion_actividad", nullable = false)
+    private String descripcionActividad;
+
+    @Column(name = "producto", nullable = false)
+    private String producto;
 
     @Column(name = "horas_semanales", nullable = false)
     private String horasSemanales;

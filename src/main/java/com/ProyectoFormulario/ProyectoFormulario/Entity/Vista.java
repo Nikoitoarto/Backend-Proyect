@@ -1,8 +1,11 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-
+@Setter
+@Getter
 @Entity
 @Table (name = "vista")
 public class Vista extends ABaseEntity{
@@ -15,21 +18,6 @@ public class Vista extends ABaseEntity{
     @JoinColumn(name = "modulo_id")
     private Modulo modulo;
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public Modulo getModulo() {
-        return modulo;
-    }
-
-    public void setModulo(Modulo modulo) {
-        this.modulo = modulo;
-    }
 
 
 }

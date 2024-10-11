@@ -3,72 +3,221 @@ package com.ProyectoFormulario.ProyectoFormulario.Service;
 
 import com.ProyectoFormulario.ProyectoFormulario.Entity.*;
 import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoFormulario;
+import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoRevision;
 import com.ProyectoFormulario.ProyectoFormulario.Enum.TipoRol;
-import com.ProyectoFormulario.ProyectoFormulario.IRepository.IBaseRepository;
-import com.ProyectoFormulario.ProyectoFormulario.IRepository.IFormularioRepository;
+import com.ProyectoFormulario.ProyectoFormulario.IRepository.*;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IFormularioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
+
+
 @Service
 public class FormularioService extends ABaseService<Formulario> implements IFormularioService {
-
-
-    @Autowired
-    private IFormularioRepository formularioRepository;
-
-    @Override
-    public Formulario crearFormulario(Formulario formulario) {
-        return formularioRepository.save(formulario);
-    }
 
     @Override
     protected IBaseRepository<Formulario, Long> getRepository() {
         return null;
     }
 
+    @Autowired
+    private IFormularioRepository formularioRepository;
+
+    @Autowired
+    private IAsignaturaDocenciaRepository asignaturaDocenciaRepository;
+
+    @Autowired
+    private IActividadesAdministrativaRepository actividadesAdministrativaRepository;
+
+    @Autowired
+    private IActividadesCientificasRepository actividadesCientificasRepository;
+
+    @Autowired
+    private IActividadesDocenciaRepository actividadesDocenciaRepository;
+
+    @Autowired
+    private IActividadesLaboresRepository actividadesLaboralesRepository;
+
+    @Autowired
+    private IRevisionFormularioRepository revisionFormularioRepository;
+
+
 
     @Override
-    public void diligenciarFormulario(Formulario formulario, Usuario usuario, AsignaturaDocencia asignatura, Actividades actividad) throws Exception {
-        if (usuario.getRoles().stream().anyMatch(p -> p.getTipoRol() == TipoRol.Docente)) {
-            formulario.setEstado(EstadoFormulario.DILIGENCIADO);
-            formulario.addAsignatura(asignatura);
-            formulario.addActividad(actividad);
-            formularioRepository.save(formulario);
+    public Formulario crearFormulario(Formulario formulario, Usuario usuario) throws Exception {
+        // Verificar que el usuario tiene el rol de docente
+        verificarRol(usuario, TipoRol.DOCENTE);
+
+        // Obtener el rol de docente del usuario
+        Rol rolDocente = usuario.getRoles().stream()
+                .filter(rol -> rol.getTipoRol() == TipoRol.DOCENTE)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Rol de docente no encontrado"));
+
+        formulario.setRol(rolDocente); // Establecemos el rol en el formulario
+
+        // Aquí obtenemos la persona que está creando el formulario
+        Persona personaCreando = usuario.getPersona();
+        if (personaCreando != null) {
+            String nombreProfesor = personaCreando.getNombre();
+            String apellidoCreador = personaCreando.getApellido();
+            System.out.println("Formulario creado por: " + nombreProfesor + " " + apellidoCreador);
+            // Si deseas almacenar esta información en el formulario, puedes agregar un campo para ello
+            formulario.setNombreProfesor(personaCreando.getNombre()); // Asegúrate de que 'setNombreCreador' exista en tu clase Formulario
         } else {
-            throw new Exception("El usuario no tiene permisos para diligenciar el formulario.");
+            throw new Exception("El usuario no tiene asociada una persona.");
         }
+
+        // Usamos el método save de la clase base
+        return save(formulario);  // save() proviene de ABaseService
+    }
+
+
+    @Override
+    public AsignaturaDocencia agregarAsignaturaDocencia(Long id, AsignaturaDocencia asignaturaDocencia) throws Exception {
+        Formulario formulario = findById(id);
+        asignaturaDocencia.setFormulario(formulario);
+        return asignaturaDocenciaRepository.save(asignaturaDocencia);
     }
 
     @Override
-    public void revisarFormulario(Formulario formulario, Usuario usuario) throws Exception {
-        for (Rol rol : usuario.getRoles()) {
-            if (rol.getTipoRol() == TipoRol.DireccionPrograma) {
-                formulario.setEstado(EstadoFormulario.REVISADO_POR_DIRECCION_PROGRAMA);
-                return;
-            } else if (rol.getTipoRol() == TipoRol.Decano) {
-                formulario.setEstado(EstadoFormulario.REVISADO_POR_DECANO);
-                return;
-            }
-        }
-        throw new Exception("El usuario no tiene permisos para revisar el formulario.");
+    public ActividadesAdministrativa agregarActividadesAdministrativa(Long id, ActividadesAdministrativa actividadesAdministrativa) throws Exception {
+        Formulario formulario = findById(id);
+        actividadesAdministrativa.setFormulario(formulario);
+        return actividadesAdministrativaRepository.save(actividadesAdministrativa);
     }
 
     @Override
-    public void procesarFormulario(Formulario formulario, Usuario usuario) throws Exception {
-        for (Rol rol : usuario.getRoles()) {
-            if (formulario.getEstado() == EstadoFormulario.DILIGENCIADO && rol.getTipoRol() == TipoRol.Decano) {
-                revisarFormulario(formulario, usuario);
-                formulario.setEstado(EstadoFormulario.LISTO_PARA_VICERRECTORIA);
-                return;
-            } else if (formulario.getEstado() == EstadoFormulario.LISTO_PARA_VICERRECTORIA && rol.getTipoRol() == TipoRol.Vicerrectoria) {
-                formulario.setEstado(EstadoFormulario.APROBADO);
-                return;
-            }
-        }
-        throw new Exception("El usuario no tiene permisos para procesar el formulario en este estado.");
+    public ActividadesCientificas agregarActividadesCientificas(Long id, ActividadesCientificas actividadesCientificas) throws Exception {
+        Formulario formulario = findById(id);
+        actividadesCientificas.setFormulario(formulario);
+        return actividadesCientificasRepository.save(actividadesCientificas);
     }
 
+    @Override
+    public ActividadesDocencia agregarActividadesDocencia(Long id, ActividadesDocencia actividadesDocencia) throws Exception {
+        Formulario formulario = findById(id);
+        actividadesDocencia.setFormulario(formulario);
+        return actividadesDocenciaRepository.save(actividadesDocencia);
+    }
+
+    @Override
+    public ActividadesLabores agregarActividadesLabores(Long id, ActividadesLabores actividadesLabores) throws Exception {
+        Formulario formulario = findById(id);
+        actividadesLabores.setFormulario(formulario);
+        return actividadesLaboralesRepository.save(actividadesLabores);
+    }
+
+
+    @Override
+    public void revisarFormulario(Formulario formulario, Usuario usuario, String comentario, EstadoRevision estadoRevision) throws Exception {
+        // Verificamos el rol directamente
+
+        TipoRol tipoRol = usuario.getRoles().stream()
+                .map(Rol::getTipoRol)
+                .findFirst()
+                .orElseThrow(() -> new Exception("El usuario no tiene un rol válido para realizar esta acción."));
+
+        switch (tipoRol) {
+            case DIRECCIONPROGRAMA:
+                if (formulario.getEstado() == EstadoFormulario.DILIGENCIADO) {
+                    if (estadoRevision == EstadoRevision.RECHAZADO) {
+                        formulario.setEstado(EstadoFormulario.DILIGENCIADO); // Devuelve al estado original
+                        guardarRevision(formulario, usuario, comentario, EstadoRevision.RECHAZADO);
+                    } else if (estadoRevision == EstadoRevision.PENDIENTE) {
+                        // Si se deja en pendiente, no cambiamos el estado del formulario
+                        guardarRevision(formulario, usuario, comentario, EstadoRevision.PENDIENTE);
+                        return; // Salimos del método para no hacer nada más
+                    } else {
+                        formulario.setEstado(EstadoFormulario.APROBADO_Y_FIRMADO); // Aprobado
+                        guardarRevision(formulario, usuario, comentario, EstadoRevision.APROBADO);
+                    }
+                } else {
+                    throw new Exception("El formulario no está en un estado válido para ser revisado por el Decano.");
+                }
+                break;
+
+            case DECANO, VICERRECTORIA:
+                if (formulario.getEstado() == EstadoFormulario.REVISADO) {
+                    if (estadoRevision == EstadoRevision.RECHAZADO) {
+                        formulario.setEstado(EstadoFormulario.REVISADO); // Devuelve al estado original
+                        guardarRevision(formulario, usuario, comentario, EstadoRevision.RECHAZADO);
+                    } else if (estadoRevision == EstadoRevision.PENDIENTE) {
+                        // Si se deja en pendiente, no cambiamos el estado del formulario
+                        guardarRevision(formulario, usuario, comentario, EstadoRevision.PENDIENTE);
+                        return; // Salimos del método para no hacer nada más
+                    } else {
+                        formulario.setEstado(EstadoFormulario.APROBADO_Y_FIRMADO); // Aprobado
+                        guardarRevision(formulario, usuario, comentario, EstadoRevision.APROBADO);
+                    }
+                } else {
+                    throw new Exception("El formulario no está en un estado válido para ser revisado por el Decano.");
+                }
+                break;
+
+            default:
+                throw new Exception("El formulario no está en un estado válido para ser procesado.");
+        }
+
+        // Guardamos los cambios en el formulario
+        save(formulario);
+    }
+
+    private void guardarRevision(Formulario formulario, Usuario usuario, String comentario, EstadoRevision estadoRevision) {
+        RevisionFormulario revision = new RevisionFormulario();
+        revision.setFormulario(formulario);
+        revision.setRolRevisor((Rol) usuario.getRoles());
+        revision.setFechaRevision(LocalDateTime.now());
+        revision.setComentarioRevision(comentario);
+        revision.setEstadoRevision(estadoRevision);
+
+        // Guardar la revisión en la base de datos
+        revisionFormularioRepository.save(revision);
+    }
+
+    private void verificarRol(Usuario usuario, TipoRol tipoRol) throws Exception {
+        boolean tieneRol = usuario.getRoles().stream()
+                .anyMatch(rol -> rol.getTipoRol() == tipoRol);
+        if (!tieneRol) {
+            throw new Exception("Permiso denegado: El usuario no tiene el rol necesario.");
+        }
+    }
+
+    public int calcularTotalHoras(Formulario formulario) {
+        int totalHoras = 0;
+
+        // Sumar horas de AsignaturaDocencia
+        if (formulario.getAsignaturaDocencia() != null) {
+            totalHoras += Integer.parseInt(formulario.getAsignaturaDocencia().getHorasSemanales());
+        }
+
+        // Sumar horas de ActividadesAdministrativa
+        if (formulario.getActividadesAdministrativa() != null) {
+            totalHoras += Integer.parseInt(formulario.getActividadesAdministrativa().getHorasSemanales());
+        }
+
+        // Sumar horas de ActividadesCientificas
+        if (formulario.getActividadesCientificas() != null) {
+            totalHoras += Integer.parseInt(formulario.getActividadesCientificas().getHorasSemanales());
+        }
+
+        // Sumar horas de ActividadesLabores
+        if (formulario.getActividadesLabores() != null) {
+            totalHoras += Integer.parseInt(formulario.getActividadesLabores().getHorasSemanales());
+        }
+
+        // Sumar horas de ActividadesDocencia
+        if (formulario.getActividadesDocencia() != null) {
+            totalHoras += Integer.parseInt(formulario.getActividadesDocencia().getHorasSemanales());
+        }
+
+        // Sumar horas de otras actividades, según sea necesario
+
+        return totalHoras;
+
+        }
 }
 
 

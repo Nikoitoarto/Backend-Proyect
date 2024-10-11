@@ -3,7 +3,6 @@ package com.ProyectoFormulario.ProyectoFormulario.Service;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.ABaseEntity;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IBaseRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IBaseService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 
 

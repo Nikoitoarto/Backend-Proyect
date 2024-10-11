@@ -1,16 +1,23 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 
 import java.util.HashSet;
 import java.util.Set;
 
+
+@Setter
+@Getter
 @Entity
 @Table(name = "usuario")
-public class Usuario extends ABaseEntity{
+public class Usuario extends ABaseEntity {
 
-    @Column(name = "email", nullable = false, unique = true, length = 50)
-    private String email;
+
+    @Column(name = "nombre_usuario", nullable = false, unique = true, length = 50)
+    private String nombreUsuario;
 
     @Column(name = "contrasena", nullable = false)
     private String contrasena;
@@ -23,27 +30,11 @@ public class Usuario extends ABaseEntity{
     )
     private Set<Rol> roles = new HashSet<>();
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "persona_id", nullable = false)
+    private Persona persona;
 
-    public String getContrasena() {
-        return contrasena;
-    }
 
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
-    }
 
-    public Set<Rol> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Rol> roles) {
-        this.roles = roles;
-    }
 }
