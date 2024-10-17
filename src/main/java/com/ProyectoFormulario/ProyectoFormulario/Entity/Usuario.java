@@ -15,8 +15,7 @@ import java.util.Set;
 @Table(name = "usuario")
 public class Usuario extends ABaseEntity {
 
-
-    @Column(name = "nombre_usuario", nullable = false, unique = true, length = 50)
+    @Column(name = "nombre_usuario", nullable = false, unique = true, length = 100)
     private String nombreUsuario;
 
     @Column(name = "contrasena", nullable = false)

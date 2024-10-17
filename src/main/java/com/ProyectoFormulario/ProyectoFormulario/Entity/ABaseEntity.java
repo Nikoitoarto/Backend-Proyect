@@ -35,5 +35,16 @@ public abstract class ABaseEntity {
     @Column(name = "deleted_by", nullable = true)
     private Long deletedBy;
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        state = true; // O el valor que consideres predeterminado
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
 
 }

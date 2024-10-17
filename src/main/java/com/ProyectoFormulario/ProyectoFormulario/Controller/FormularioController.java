@@ -1,6 +1,5 @@
 package com.ProyectoFormulario.ProyectoFormulario.Controller;
 
-import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDto;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.*;
 import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoRevision;
 import com.ProyectoFormulario.ProyectoFormulario.IService.*;
@@ -32,7 +31,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
 
     // Crear formulario
     @PostMapping("/crear")
-    public ResponseEntity<Formulario> crearFormulario(@RequestBody Formulario formulario, @RequestParam Long usuarioId) {
+    public ResponseEntity<Formulario> crearFormulario(@RequestBody Formulario formulario, @RequestBody Long usuarioId) {
         try {
             Usuario usuario = obtenerUsuarioPorId(usuarioId); // Asume que tienes un método para obtener el usuario por su ID
             Formulario nuevoFormulario = formularioService.crearFormulario(formulario, usuario);
@@ -41,6 +40,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
 
     // Agregar AsignaturaDocencia al formulario
     @PostMapping("/{id}/asignatura-docencia")
@@ -99,8 +99,8 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
 
     // Revisar formulario
     @PostMapping("/{id}/revisar")
-    public ResponseEntity<String> revisarFormulario(@PathVariable Long id, @RequestParam Long usuarioId,
-                                                    @RequestParam String comentario, @RequestParam EstadoRevision estadoRevision) {
+    public ResponseEntity<String> revisarFormulario(@PathVariable Long id, @RequestBody Long usuarioId,
+                                                    @RequestBody String comentario, @RequestBody EstadoRevision estadoRevision) {
         try {
             // Obtén el formulario a revisar
             Formulario formulario = formularioService.findById(id);

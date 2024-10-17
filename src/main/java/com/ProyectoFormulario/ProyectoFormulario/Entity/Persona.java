@@ -14,19 +14,19 @@ import lombok.Setter;
 @Table(name = "persona")
 public class Persona extends ABaseEntity{
 
-    @Column(name = "nombre", nullable = false, length = 100)
+    @Column(name = "nombre", nullable = false, length = 250)
     private String nombre;
 
-    @Column(name = "apellido", nullable = false, length = 100)
+    @Column(name = "apellido", nullable = false, length = 250)
     private String apellido;
 
-    @Column(name = "identificacion", nullable = false, unique = true, length = 20)
+    @Column(name = "identificacion", nullable = false, unique = true, length = 120)
     private String identificacion;
 
-    @Column(name = "telefono", length = 15)
-    private int telefono;
+    @Column(name = "telefono", length = 250)
+    private String telefono;
 
-    @Column(name = "direccion", length = 200)
+    @Column(name = "direccion", length = 250)
     private String direccion;
 
 }

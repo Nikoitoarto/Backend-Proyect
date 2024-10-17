@@ -19,7 +19,7 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
 
     @Override
     protected IBaseRepository<Formulario, Long> getRepository() {
-        return null;
+        return formularioRepository;
     }
 
     @Autowired
@@ -47,28 +47,25 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
 
     @Override
     public Formulario crearFormulario(Formulario formulario, Usuario usuario) throws Exception {
-        // Verificar que el usuario tiene el rol de docente
-        verificarRol(usuario, TipoRol.DOCENTE);
-
         // Obtener el rol de docente del usuario
         Rol rolDocente = usuario.getRoles().stream()
                 .filter(rol -> rol.getTipoRol() == TipoRol.DOCENTE)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Rol de docente no encontrado"));
 
-        formulario.setRol(rolDocente); // Establecemos el rol en el formulario
-
         // Aquí obtenemos la persona que está creando el formulario
         Persona personaCreando = usuario.getPersona();
         if (personaCreando != null) {
-            String nombreProfesor = personaCreando.getNombre();
-            String apellidoCreador = personaCreando.getApellido();
-            System.out.println("Formulario creado por: " + nombreProfesor + " " + apellidoCreador);
+            String nombreCompletoProfesor = personaCreando.getNombre() + " " + personaCreando.getApellido();
+            System.out.println("Formulario creado por: " + nombreCompletoProfesor);
             // Si deseas almacenar esta información en el formulario, puedes agregar un campo para ello
             formulario.setNombreProfesor(personaCreando.getNombre()); // Asegúrate de que 'setNombreCreador' exista en tu clase Formulario
         } else {
             throw new Exception("El usuario no tiene asociada una persona.");
         }
+
+        verificarRol(usuario, TipoRol.DOCENTE);
+        formulario.setRol(rolDocente); // Establecemos el rol en el formulario
 
         // Usamos el método save de la clase base
         return save(formulario);  // save() proviene de ABaseService

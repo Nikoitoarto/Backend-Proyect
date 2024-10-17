@@ -40,6 +40,7 @@ public abstract class ABaseService<T extends ABaseEntity> implements IBaseServic
         try {
             entity.setCreatedBy(1L);
             entity.setCreatedAt(LocalDateTime.now());
+            entity.setState(true);
             return getRepository().save(entity);
         } catch (Exception e) {
             throw new Exception("Error al guardar la entidad: " + e.getMessage());

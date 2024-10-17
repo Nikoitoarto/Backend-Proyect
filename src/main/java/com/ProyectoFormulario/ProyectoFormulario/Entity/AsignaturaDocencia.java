@@ -36,7 +36,6 @@ public class AsignaturaDocencia extends ABaseEntity{
     @Column(name = "total_horas_semestre", nullable = false)
     private Long totalHorasSemestre;
 
-
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "formulario_id", nullable = false)
     private Formulario formulario;
