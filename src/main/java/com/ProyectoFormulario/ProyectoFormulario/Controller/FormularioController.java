@@ -1,9 +1,15 @@
 package com.ProyectoFormulario.ProyectoFormulario.Controller;
 
+import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDto;
+import com.ProyectoFormulario.ProyectoFormulario.Dto.FormularioDto;
+import com.ProyectoFormulario.ProyectoFormulario.Dto.RevisionRequest;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.*;
+import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoFormulario;
 import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoRevision;
+import com.ProyectoFormulario.ProyectoFormulario.Enum.TipoRol;
 import com.ProyectoFormulario.ProyectoFormulario.IService.*;
 import com.ProyectoFormulario.ProyectoFormulario.Service.*;
+import com.ProyectoFormulario.ProyectoFormulario.exceptions.RolNoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +23,6 @@ import java.util.NoSuchElementException;
 public class FormularioController extends ABaseController<Formulario, IFormularioService> {
 
 
-    @Autowired
     public FormularioController(IFormularioService service) {
         super(service, "formulario");
     }
@@ -29,15 +34,42 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
     private FormularioService formularioService;
 
 
-    // Crear formulario
     @PostMapping("/crear")
-    public ResponseEntity<Formulario> crearFormulario(@RequestBody Formulario formulario, @RequestBody Long usuarioId) {
+    public ResponseEntity<ApiResponseDto<Formulario>> crearFormulario(@RequestBody FormularioDto formularioDto) {
         try {
-            Usuario usuario = obtenerUsuarioPorId(usuarioId); // Asume que tienes un método para obtener el usuario por su ID
+
+            // Imprime el DTO para verificar los valores
+            System.out.println("Formulario DTO: " + formularioDto);
+
+            Long usuarioId = formularioDto.getUsuarioId();
+            Usuario usuario = obtenerUsuarioPorId(usuarioId);// Método para obtener el usuario por su ID
+
+            // Crear una nueva instancia del formulario y establecer sus atributos
+            Formulario formulario = new Formulario();
+            formulario.setFechaFormulario(formularioDto.getFormulario().getFechaFormulario());
+            formulario.setNombreProfesor(formularioDto.getFormulario().getNombreProfesor());
+            formulario.setFacultad(formularioDto.getFormulario().getFacultad());
+            formulario.setPrograma(formularioDto.getFormulario().getPrograma());
+            formulario.setPeriodo(formularioDto.getFormulario().getPeriodo());
+            // Asignar estado directamente desde el DTO
+            formulario.setEstado(formularioDto.getFormulario().getEstado());
+
+            // Obtener el rol de docente del usuario
+            Rol rolDocente = usuario.getRoles().stream()
+                    .filter(rol -> rol.getTipoRol() == TipoRol.DOCENTE)
+                    .findFirst()
+                    .orElseThrow(() -> new RolNoEncontradoException("Rol de docente no encontrado"));
+
+            formulario.setRol(rolDocente); // Establecemos el rol en el formulario
+            // Llamar al servicio para crear el formulario
             Formulario nuevoFormulario = formularioService.crearFormulario(formulario, usuario);
-            return ResponseEntity.ok(nuevoFormulario);
+            // Crear respuesta de éxito
+            ApiResponseDto<Formulario> response = new ApiResponseDto<>("Formulario creado exitosamente", nuevoFormulario, true);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            // Crear respuesta de error
+            ApiResponseDto<Formulario> response = new ApiResponseDto<>("Error al crear el formulario: " + e.getMessage(), null, false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -99,17 +131,16 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
 
     // Revisar formulario
     @PostMapping("/{id}/revisar")
-    public ResponseEntity<String> revisarFormulario(@PathVariable Long id, @RequestBody Long usuarioId,
-                                                    @RequestBody String comentario, @RequestBody EstadoRevision estadoRevision) {
+    public ResponseEntity<String> revisarFormulario(@PathVariable Long id, @RequestBody RevisionRequest revisionRequest) {
         try {
             // Obtén el formulario a revisar
             Formulario formulario = formularioService.findById(id);
 
             // Obtén el usuario revisor
-            Usuario usuario = usuarioService.findById(usuarioId); // Asegúrate de tener este método en UsuarioService
+            Usuario usuario = usuarioService.findById(revisionRequest.getUsuarioId()); // Asegúrate de tener este método en UsuarioService
 
             // Realiza la revisión del formulario
-            formularioService.revisarFormulario(formulario, usuario, comentario, estadoRevision);
+            formularioService.revisarFormulario(formulario, usuario, revisionRequest.getComentario(), revisionRequest.getEstadoRevision());
 
             return ResponseEntity.ok("Revisión del formulario realizada con éxito.");
         } catch (NoSuchElementException e) {

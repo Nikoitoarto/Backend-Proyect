@@ -1,6 +1,5 @@
 package com.ProyectoFormulario.ProyectoFormulario.Dto;
 
-import com.ProyectoFormulario.ProyectoFormulario.Entity.Usuario;
 
 public class ApiResponseDto<T> {
     private Boolean status;

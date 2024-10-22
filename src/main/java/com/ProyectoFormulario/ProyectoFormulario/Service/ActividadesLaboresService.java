@@ -1,6 +1,5 @@
 package com.ProyectoFormulario.ProyectoFormulario.Service;
 
-import com.ProyectoFormulario.ProyectoFormulario.Entity.ActividadesDocencia;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.ActividadesLabores;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IActividadesLaboresRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IBaseRepository;

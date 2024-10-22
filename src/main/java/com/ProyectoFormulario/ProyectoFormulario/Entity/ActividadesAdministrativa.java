@@ -7,18 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Table(name = "actividades_administrativas")
 @Entity
+@Table(name = "actividades_administrativas")
 public class ActividadesAdministrativa extends ABaseEntity {
 
     @Column(name = "actividad", nullable = false)
     private String actividad;
-
-    @Column(name = "dedicacion_horas_Semanales", nullable = false)
-    private Long dedicacionHorasSemanales;
-
-    @Column(name = "dedicacion_horas_semestre", nullable = false)
-    private Long dedicacionHorasSemestre;
 
     @Column(name = "descripcion_actividad", nullable = false)
     private String descripcionActividad;
@@ -27,7 +21,7 @@ public class ActividadesAdministrativa extends ABaseEntity {
     private String producto;
 
     @Column(name = "horas_semanales", nullable = false)
-    private String horasSemanales;
+    private Long horasSemanales;
 
     @Column(name = "horas_semestre", nullable = false)
     private Long horasSemestre;
@@ -38,7 +32,7 @@ public class ActividadesAdministrativa extends ABaseEntity {
     @Column(name = "total_horas_semestre", nullable = false)
     private Long totalHorasSemestre;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "formulario_id", nullable = false)
     private Formulario formulario;
 

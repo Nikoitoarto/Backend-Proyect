@@ -25,7 +25,7 @@ public class AsignaturaDocencia extends ABaseEntity{
     private String sede;
 
     @Column(name = "horas_semanales", nullable = false)
-    private String horasSemanales;
+    private Long horasSemanales;
 
     @Column(name = "horas_semestre", nullable = false)
     private Long horasSemestre;
@@ -36,7 +36,7 @@ public class AsignaturaDocencia extends ABaseEntity{
     @Column(name = "total_horas_semestre", nullable = false)
     private Long totalHorasSemestre;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "formulario_id", nullable = false)
     private Formulario formulario;
 

@@ -1,11 +1,13 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Setter
@@ -28,5 +30,6 @@ public class Persona extends ABaseEntity{
 
     @Column(name = "direccion", length = 250)
     private String direccion;
+
 
 }

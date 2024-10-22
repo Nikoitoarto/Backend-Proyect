@@ -26,6 +26,7 @@ public class Rol extends ABaseEntity {
     private Set<Usuario> usuarios = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinTable(
             name = "rol_modulo",
             joinColumns = @JoinColumn(name = "rol_id"),

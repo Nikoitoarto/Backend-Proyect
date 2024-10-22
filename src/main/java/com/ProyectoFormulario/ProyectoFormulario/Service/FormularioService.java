@@ -7,6 +7,9 @@ import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoRevision;
 import com.ProyectoFormulario.ProyectoFormulario.Enum.TipoRol;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.*;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IFormularioService;
+import com.ProyectoFormulario.ProyectoFormulario.exceptions.FormularioInvalidoException;
+import com.ProyectoFormulario.ProyectoFormulario.exceptions.PersonaNoAsociadaException;
+import com.ProyectoFormulario.ProyectoFormulario.exceptions.RolNoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,24 +54,25 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
         Rol rolDocente = usuario.getRoles().stream()
                 .filter(rol -> rol.getTipoRol() == TipoRol.DOCENTE)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Rol de docente no encontrado"));
+                .orElseThrow(() -> new RolNoEncontradoException("Rol de docente no encontrado"));
 
-        // Aquí obtenemos la persona que está creando el formulario
+        // Obtener la persona que está creando el formulario
         Persona personaCreando = usuario.getPersona();
-        if (personaCreando != null) {
-            String nombreCompletoProfesor = personaCreando.getNombre() + " " + personaCreando.getApellido();
-            System.out.println("Formulario creado por: " + nombreCompletoProfesor);
-            // Si deseas almacenar esta información en el formulario, puedes agregar un campo para ello
-            formulario.setNombreProfesor(personaCreando.getNombre()); // Asegúrate de que 'setNombreCreador' exista en tu clase Formulario
-        } else {
-            throw new Exception("El usuario no tiene asociada una persona.");
+        if (personaCreando == null) {
+            throw new PersonaNoAsociadaException("El usuario no tiene asociada una persona.");
         }
 
-        verificarRol(usuario, TipoRol.DOCENTE);
-        formulario.setRol(rolDocente); // Establecemos el rol en el formulario
+        // Establecer el nombre completo del profesor
+        String nombreCompletoProfesor = personaCreando.getNombre() + " " + personaCreando.getApellido();
+        System.out.println("Formulario creado por: " + nombreCompletoProfesor);
+        formulario.setNombreProfesor(nombreCompletoProfesor); // Establecer el nombre completo
 
-        // Usamos el método save de la clase base
-        return save(formulario);  // save() proviene de ABaseService
+        // Verificar que el usuario tenga el rol correcto
+        verificarRol(usuario, TipoRol.DOCENTE);
+        formulario.setRol(rolDocente); // Establecer el rol en el formulario
+
+        // Guardar el formulario usando el método save de la clase base
+        return save(formulario); // save() proviene de ABaseService
     }
 
 
@@ -187,27 +191,27 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
 
         // Sumar horas de AsignaturaDocencia
         if (formulario.getAsignaturaDocencia() != null) {
-            totalHoras += Integer.parseInt(formulario.getAsignaturaDocencia().getHorasSemanales());
+            totalHoras += (formulario.getAsignaturaDocencia().getHorasSemanales());
         }
 
         // Sumar horas de ActividadesAdministrativa
         if (formulario.getActividadesAdministrativa() != null) {
-            totalHoras += Integer.parseInt(formulario.getActividadesAdministrativa().getHorasSemanales());
+            totalHoras += (formulario.getActividadesAdministrativa().getHorasSemanales());
         }
 
         // Sumar horas de ActividadesCientificas
         if (formulario.getActividadesCientificas() != null) {
-            totalHoras += Integer.parseInt(formulario.getActividadesCientificas().getHorasSemanales());
+            totalHoras += (formulario.getActividadesCientificas().getHorasSemanales());
         }
 
         // Sumar horas de ActividadesLabores
         if (formulario.getActividadesLabores() != null) {
-            totalHoras += Integer.parseInt(formulario.getActividadesLabores().getHorasSemanales());
+            totalHoras += (formulario.getActividadesLabores().getHorasSemanales());
         }
 
         // Sumar horas de ActividadesDocencia
         if (formulario.getActividadesDocencia() != null) {
-            totalHoras += Integer.parseInt(formulario.getActividadesDocencia().getHorasSemanales());
+            totalHoras += (formulario.getActividadesDocencia().getHorasSemanales());
         }
 
         // Sumar horas de otras actividades, según sea necesario
@@ -215,6 +219,11 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
         return totalHoras;
 
         }
+
+
+
+
+
 }
 
 
