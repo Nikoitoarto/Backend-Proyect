@@ -46,7 +46,7 @@ public class UsuarioServiceTest {
 
     @Test
     @Transactional
-    public void testCrearUsuario_exito() {
+    public void testCrearUsuario_exito() throws Exception {
         // Crear datos simulados
         Persona persona = new Persona();
         persona.setNombre("John");
@@ -56,23 +56,23 @@ public class UsuarioServiceTest {
         usuario.setNombreUsuario("usuario1");
         usuario.setPersona(persona);
 
-        Rol rolDocente = new Rol();
-        rolDocente.setId(1L); // Simula que el rol tiene ID 1
-        rolDocente.setTipoRol(TipoRol.DOCENTE); // Enum de tipo de rol
+        Rol rol = new Rol();
+        rol.setId(1L); // Simula que el rol tiene ID 1
+        rol.setTipoRol(TipoRol.DOCENTE); // Enum de tipo de rol
 
         Set<Rol> roles = new HashSet<>();
-        roles.add(rolDocente);
+        roles.add(rol);
 
         usuario.setRoles(roles); // Asignar roles simulados al usuario
 
         ApiResponseDto<Usuario> usuarioDto = new ApiResponseDto<>("Usuario Creado", usuario, true);
 
         // Simular las respuestas de los repositorios
-        when(rolRepository.findById(1L)).thenReturn(Optional.of(rolDocente));
+        when(rolRepository.findById(1L)).thenReturn(Optional.of(rol));
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
 
         // Llamar al método de servicio
-        ApiResponseDto<Usuario> response = usuarioService.crearUsuario(usuarioDto);
+        ApiResponseDto<Usuario> response = usuarioService.crearUsuario(usuario, rol, persona);
 
         // Verificar que el método save fue llamado
         verify(usuarioRepository, times(1)).save(any(Usuario.class));
@@ -99,12 +99,12 @@ public class UsuarioServiceTest {
         usuario.setNombreUsuario("usuario1");
         usuario.setPersona(persona);
 
-        Rol rolNoExistente = new Rol();
-        rolNoExistente.setId(99L);
+        Rol rol = new Rol();
+        rol.setId(99L);
         // ID de un rol inexistente
 
         Set<Rol> roles = new HashSet<>();
-        roles.add(rolNoExistente);
+        roles.add(rol);
 
         usuario.setRoles(roles); // Asignar roles simulados al usuario
 
@@ -115,7 +115,7 @@ public class UsuarioServiceTest {
 
         // Llamar al método de servicio y capturar excepción
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            usuarioService.crearUsuario(usuarioDto);
+            usuarioService.crearUsuario(usuario, rol, persona);
         });
 
         // Verificar mensaje de excepción

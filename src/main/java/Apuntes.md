@@ -1,7 +1,7 @@
 
 # Apuntes
 
-### BodyRequest para la gestión de del endpoint formulairo/crear:
+## BodyRequest para la gestión de del endpoint formulairo/crear:
 
 
 
@@ -58,3 +58,16 @@
   "message": "Formulario creado exitosamente"
 }
 ```
+
+## Body Request para la gestion del endpoint Crear\Usuario
+
+````json
+{
+  "rolId": 1,           
+  "personaId": 1,       
+  "usuario": {
+    "nombreUsuario": "nikoi",  
+    "contrasena": "nikolas1"  
+  }
+}
+````
