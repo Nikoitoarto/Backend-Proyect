@@ -4,8 +4,6 @@ import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDto;
 import com.ProyectoFormulario.ProyectoFormulario.Dto.FormularioDto;
 import com.ProyectoFormulario.ProyectoFormulario.Dto.RevisionRequest;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.*;
-import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoFormulario;
-import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoRevision;
 import com.ProyectoFormulario.ProyectoFormulario.Enum.TipoRol;
 import com.ProyectoFormulario.ProyectoFormulario.IService.*;
 import com.ProyectoFormulario.ProyectoFormulario.Service.*;

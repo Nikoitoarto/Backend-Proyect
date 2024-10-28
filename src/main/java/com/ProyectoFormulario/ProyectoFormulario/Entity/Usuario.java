@@ -33,7 +33,4 @@ public class Usuario extends ABaseEntity {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "persona_id", nullable = false)
     private Persona persona;
-
-
-
-}
+ }
