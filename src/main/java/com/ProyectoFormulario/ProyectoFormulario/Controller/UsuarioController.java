@@ -2,8 +2,6 @@ package com.ProyectoFormulario.ProyectoFormulario.Controller;
 
 import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDto;
 import com.ProyectoFormulario.ProyectoFormulario.Dto.UsuarioDto;
-import com.ProyectoFormulario.ProyectoFormulario.Entity.Persona;
-import com.ProyectoFormulario.ProyectoFormulario.Entity.Rol;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Usuario;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,27 +29,13 @@ public class UsuarioController extends ABaseController<Usuario, IUsuarioService>
     @PostMapping("/crear")
     public ResponseEntity<ApiResponseDto<Usuario>> crearUsuario(@RequestBody UsuarioDto usuarioDto) {
         try {
-            // Crear un objeto Rol y Persona usando los IDs del DTO
-            Rol rol = new Rol();
-            rol.setId(usuarioDto.getRolId());
-
-            Persona persona = new Persona();
-            persona.setId(usuarioDto.getPersonaId());
-
-            // Crear un nuevo usuario
-            Usuario nuevoUsuario = new Usuario();
-            nuevoUsuario.setNombreUsuario(usuarioDto.getUsuario().getNombreUsuario()); // Asegúrate de que el DTO tenga este atributo
-
-            // Hashear la contraseña antes de asignarla
-            String hashedPassword = passwordEncoder.encode(usuarioDto.getUsuario().getContrasena()); // Asegúrate de que el DTO tenga este atributo
-            nuevoUsuario.setContrasena(hashedPassword); // Asignar la contraseña hasheada
-
-            // Llamar al servicio para crear el usuario
-            ApiResponseDto<Usuario> response = usuarioService.crearUsuario(nuevoUsuario, rol, persona);
+            // Llamar al servicio para crear el usuario usando el DTO directamente
+            ApiResponseDto<Usuario> response = usuarioService.crearUsuario(usuarioDto);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
             // Manejo de excepciones y respuesta de error
             return new ResponseEntity<>(new ApiResponseDto<>(e.getMessage(), null, false), HttpStatus.BAD_REQUEST);
         }
     }
+
 }

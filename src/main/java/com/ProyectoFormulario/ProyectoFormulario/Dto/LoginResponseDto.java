@@ -4,15 +4,26 @@ public class LoginResponseDto {
 
     private String token;
     private String usuarioNombre;
+    private String contrasena;
     private Long personaId;
     private Long rolId;
 
     // Constructor
-    public LoginResponseDto(String token, String usuarioNombre, Long personaId, Long rolId) {
+    public LoginResponseDto(String token, String usuarioNombre, Long personaId, Long rolId, String contrasena) {
         this.token = token;
         this.usuarioNombre = usuarioNombre;
         this.personaId = personaId;
         this.rolId = rolId;
+        this.contrasena = contrasena;
+    }
+
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
     // Getters y Setters

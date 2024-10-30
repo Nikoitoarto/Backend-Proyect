@@ -9,23 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class AuthService implements UserDetailsService {
 
     private final IUsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder; // Inyecta PasswordEncoder
     private final JwtUtils jwtUtils; // Inyecta JwtUtils para generar tokens
 
     @Autowired
-    public AuthService(IUsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    public AuthService(IUsuarioRepository usuarioRepository, JwtUtils jwtUtils) {
         this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
     }
 
@@ -34,7 +33,10 @@ public class AuthService implements UserDetailsService {
                 .orElseThrow(() -> new Exception("Usuario no encontrado"));
 
         // Verificar la contraseña
-        if (!passwordEncoder.matches(contrasena, usuario.getContrasena())) {
+        boolean isPasswordMatch = passwordEncoder.matches(contrasena, usuario.getContrasena());
+        System.out.println("Comparando contraseñas: " + isPasswordMatch);
+
+        if (!isPasswordMatch) {
             throw new Exception("Contraseña incorrecta");
         }
 
@@ -46,11 +48,14 @@ public class AuthService implements UserDetailsService {
                 token,
                 usuario.getNombreUsuario(),
                 usuario.getPersona().getId(),
-                usuario.getRoles().iterator().next().getId()
+                usuario.getRoles().iterator().next().getId(),
+                usuario.getContrasena()
         );
 
         return new ApiResponseDto<>("Login exitoso", responseData, true);
     }
+
+
 
     // Método requerido por UserDetailsService
     @Override

@@ -1,7 +1,7 @@
 package com.ProyectoFormulario.ProyectoFormulario.Service;
 
 import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDto;
-import com.ProyectoFormulario.ProyectoFormulario.Dto.LoginResponseDto;
+import com.ProyectoFormulario.ProyectoFormulario.Dto.UsuarioDto;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Persona;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Rol;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Usuario;
@@ -12,27 +12,17 @@ import com.ProyectoFormulario.ProyectoFormulario.IRepository.IUsuarioRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IUsuarioService;
 import com.ProyectoFormulario.ProyectoFormulario.Security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
-
 
 @Service
 public class UsuarioService extends ABaseService<Usuario> implements IUsuarioService {
 
-    @Override
-    protected IBaseRepository<Usuario, Long> getRepository() {
-        return repository;
-    }
-
     @Autowired
     private JwtUtils jwtUtils;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private IUsuarioRepository repository;
@@ -43,32 +33,40 @@ public class UsuarioService extends ABaseService<Usuario> implements IUsuarioSer
     @Autowired
     private IPersonaRepository personaRepository;
 
-    public ApiResponseDto<Usuario> crearUsuario(Usuario usuario, Rol rol, Persona persona) throws Exception {
-        // Obtener la entidad Rol por ID
-        Rol rolEncontrado = rolRepository.findById(rol.getId())
-                .orElseThrow(() -> new Exception("El Rol con ID " + rol.getId() + " no existe"));
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;  // Agregar PasswordEncoder como dependencia
 
-        // Obtener la persona que está creando el usuario
-        Persona personaEncontrado = personaRepository.findById(persona.getId())
-                .orElseThrow(() -> new Exception("La persona con ID " + persona.getId() + " no existe"));
+    @Override
+    protected IBaseRepository<Usuario, Long> getRepository() {
+        return repository;
+    }
 
-        // Crear un nuevo usuario y asignar los datos
+    public ApiResponseDto<Usuario> crearUsuario(UsuarioDto usuarioDto) throws Exception {
+        // Obtener el rol usando el ID del DTO
+        Rol rolEncontrado = rolRepository.findById(usuarioDto.getRolId())
+                .orElseThrow(() -> new Exception("El Rol con ID " + usuarioDto.getRolId() + " no existe"));
+
+        // Obtener la persona usando el ID del DTO
+        Persona personaEncontrada = personaRepository.findById(usuarioDto.getPersonaId())
+                .orElseThrow(() -> new Exception("La Persona con ID " + usuarioDto.getPersonaId() + " no existe"));
+
+        // Crear un nuevo objeto Usuario y asignar los valores
         Usuario nuevoUsuario = new Usuario();
-        nuevoUsuario.setNombreUsuario(usuario.getNombreUsuario());
+        nuevoUsuario.setNombreUsuario(usuarioDto.getUsuario().getNombreUsuario());
 
-        // Hashear la contraseña antes de asignarla
-        String hashedPassword = passwordEncoder.encode(usuario.getContrasena());
+        // Hashear la contraseña
+        String hashedPassword = passwordEncoder.encode(usuarioDto.getUsuario().getContrasena());
         nuevoUsuario.setContrasena(hashedPassword);
 
-        // Crear un Set y agregar el rol recuperado
+        // Asignar el rol
         Set<Rol> roles = new HashSet<>();
-        roles.add(rolEncontrado); // Usar rol encontrado
-        nuevoUsuario.setRoles(roles); // Establecer los roles en el usuario
+        roles.add(rolEncontrado);
+        nuevoUsuario.setRoles(roles);
 
-        // Asociar la persona existente
-        nuevoUsuario.setPersona(personaEncontrado); // Usar persona encontrada
+        // Asignar la persona encontrada
+        nuevoUsuario.setPersona(personaEncontrada);
 
-        // Guardar el nuevo usuario en la base de datos
+        // Guardar el usuario en la base de datos
         Usuario usuarioGuardado = repository.save(nuevoUsuario);
 
         // Retornar la respuesta
@@ -76,39 +74,9 @@ public class UsuarioService extends ABaseService<Usuario> implements IUsuarioSer
     }
 
 
-    @Override
-    public ApiResponseDto<LoginResponseDto> login(String nombreUsuario, String contrasena) throws Exception {
-        Usuario usuario = repository.findByNombreUsuario(nombreUsuario)
-                .orElseThrow(() -> new Exception("Usuario no encontrado"));
-
-        if (!passwordEncoder.matches(contrasena, usuario.getContrasena())) {
-            throw new Exception("Contraseña incorrecta");
-        }
-
-        String token = jwtUtils.generateToken(nombreUsuario);
-
-        LoginResponseDto loginResponse = new LoginResponseDto(
-                token,
-                usuario.getNombreUsuario(),
-                usuario.getPersona().getId(),
-                usuario.getRoles().iterator().next().getId()
-        );
-
-        return new ApiResponseDto<>("Login exitoso", loginResponse, true);
-    }
-
-
 
     public Usuario findByNombreUsuario(String nombreUsuario) throws Exception {
-        Optional<Usuario> usuarioOptional = repository.findByNombreUsuario(nombreUsuario);
-        if (usuarioOptional.isPresent()) {
-            System.out.println("Usuario encontrado: " + usuarioOptional.get()); // Debug log
-            return usuarioOptional.get();
-        } else {
-            throw new Exception("Usuario con nombre " + nombreUsuario + " no encontrado");
-        }
+        return repository.findByNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new Exception("Usuario con nombre " + nombreUsuario + " no encontrado"));
     }
-
-
-
 }
