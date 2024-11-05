@@ -15,15 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/usuario")
 public class UsuarioController extends ABaseController<Usuario, IUsuarioService> {
 
-    private final PasswordEncoder passwordEncoder; // Inyectar PasswordEncoder
-
     @Autowired
     private IUsuarioService usuarioService;
 
     @Autowired
     public UsuarioController(IUsuarioService service, PasswordEncoder passwordEncoder) {
         super(service, "Usuario");
-        this.passwordEncoder = passwordEncoder; // Inicializar PasswordEncoder
     }
 
     @PostMapping("/crear")

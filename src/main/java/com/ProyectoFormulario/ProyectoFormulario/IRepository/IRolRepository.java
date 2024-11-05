@@ -4,10 +4,10 @@ import com.ProyectoFormulario.ProyectoFormulario.Entity.Rol;
 import com.ProyectoFormulario.ProyectoFormulario.Enum.TipoRol;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface IRolRepository extends IBaseRepository<Rol, Long> {
-     List<Rol> findByTipoRol(TipoRol tipoRol);
+     Optional<Rol> findByTipoRol(TipoRol tipoRol);
 }

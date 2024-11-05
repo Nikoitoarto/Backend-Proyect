@@ -25,15 +25,29 @@ public class Rol extends ABaseEntity {
     @JsonIgnore
     private Set<Usuario> usuarios = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinTable(
-            name = "rol_modulo",
+            name = "rol_permiso",
             joinColumns = @JoinColumn(name = "rol_id"),
-            inverseJoinColumns = @JoinColumn(name = "modulo_id")
+            inverseJoinColumns = @JoinColumn(name = "permiso_id")
     )
-    private Set<Modulo> modulos = new HashSet<>();
+    private Set<Permiso> permisos = new HashSet<>();
 
+
+    // Constructor que acepta TipoRol
+    public Rol(TipoRol tipoRol) {
+        this.tipoRol = tipoRol;
+        this.permisos = new HashSet<>(); // Inicializa la colección de permisos
+    }
+
+    // Constructor vacío requerido por JPA
+    public Rol() {}
+
+    // Método para agregar permisos
+    public void addPermiso(Permiso permiso) {
+        this.permisos.add(permiso);
+    }
 
 
 }

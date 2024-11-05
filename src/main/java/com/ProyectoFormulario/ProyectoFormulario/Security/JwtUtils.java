@@ -5,35 +5,56 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.SecretKey;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils {
 
-    // Cargar la clave secreta desde la configuración
-    @Value("${jwt.secret}")
-    private String secretKey;
+    private final SecretKey secretKey;
 
-    // El tiempo de expiración del token
     @Value("${jwt.expiration}")
-    private long expirationTime; // en milisegundos
+    private long expirationTime;
 
-    private SecretKey getSecretKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    public JwtUtils() {
+        this.secretKey = generateSecretKey();
+    }
+
+    private SecretKey generateSecretKey() {
+        byte[] keyBytes = new byte[64];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(keyBytes);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 
+    public List<GrantedAuthority> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        List<String> roles = claims.get("roles", List.class);
+        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
+
+    // Nuevo método para extraer permisos desde el token
+    public List<String> extractPermissions(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("permissions", List.class); // Extrae permisos como lista de strings
+    }
+
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(getSecretKey())
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -47,10 +68,11 @@ public class JwtUtils {
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    public String generateToken(String username) {
+    // Modificación del método generateToken para incluir permisos
+    public String generateToken(String username, List<String> roles, List<String> permissions) {
         Map<String, Object> claims = new HashMap<>();
-        // Agregar roles o permisos si es necesario
-        // claims.put("role", "ROLE_USER"); // ejemplo de agregar un rol
+        claims.put("roles", roles);
+        claims.put("permissions", permissions); // Añade permisos a las claims
         return createToken(claims, username);
     }
 
@@ -59,8 +81,8 @@ public class JwtUtils {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // Tiempo de expiración configurado
-                .signWith(getSecretKey()) // Usar la clave secreta obtenida
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(secretKey, SignatureAlgorithm.HS512)
                 .compact();
     }
 }

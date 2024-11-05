@@ -4,5 +4,6 @@ public enum TipoRol {
     DOCENTE,
     DECANO,
     VICERRECTORIA,
-    DIRECCIONPROGRAMA
+    DIRECCIONPROGRAMA,
+    ADMIN
 }

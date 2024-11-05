@@ -3,11 +3,13 @@ package com.ProyectoFormulario.ProyectoFormulario.Security;
 
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Usuario;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 
 
 public class CustomUserDetails implements UserDetails{
@@ -21,10 +23,13 @@ public class CustomUserDetails implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Convierte los roles a GrantedAuthority, si es necesario
-        return usuario.getRoles().stream()
-                .map(rol -> (GrantedAuthority) () -> String.valueOf(rol.getTipoRol()))
-                .collect(Collectors.toList());
+        List<GrantedAuthority> authorities = Stream.concat(
+                usuario.getRoles().stream().map(rol -> new SimpleGrantedAuthority("ROLE_" + rol.getTipoRol().name())),
+                usuario.getRoles().stream().flatMap(rol -> rol.getPermisos().stream())
+                        .map(permiso -> new SimpleGrantedAuthority(permiso.getNombrePermiso().getNombrePermiso()))
+        ).collect(Collectors.toList());
+        return authorities;
+
     }
 
     @Override

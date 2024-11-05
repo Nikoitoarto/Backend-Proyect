@@ -4,15 +4,17 @@ import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDto;
 import com.ProyectoFormulario.ProyectoFormulario.Dto.FormularioDto;
 import com.ProyectoFormulario.ProyectoFormulario.Dto.RevisionRequest;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.*;
-import com.ProyectoFormulario.ProyectoFormulario.Enum.TipoRol;
+import com.ProyectoFormulario.ProyectoFormulario.Enum.NombrePermiso;
 import com.ProyectoFormulario.ProyectoFormulario.IService.*;
+import com.ProyectoFormulario.ProyectoFormulario.Security.JwtUtils;
 import com.ProyectoFormulario.ProyectoFormulario.Service.*;
-import com.ProyectoFormulario.ProyectoFormulario.exceptions.RolNoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -31,36 +33,30 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
     @Autowired
     private FormularioService formularioService;
 
+    @Autowired
+    private JwtUtils jwtUtils;
 
+    @PreAuthorize("hasRole('DOCENTE') or hasRole('ADMIN')") // Solo los usuarios con el rol 'DOCENTE' Y 'ADMIN' pueden acceder a este endpoint
     @PostMapping("/crear")
-    public ResponseEntity<ApiResponseDto<Formulario>> crearFormulario(@RequestBody FormularioDto formularioDto) {
+    public ResponseEntity<ApiResponseDto<Formulario>> crearFormulario(
+            @RequestHeader("Authorization") String token,
+            @RequestBody FormularioDto formularioDto) {
         try {
+            // Extraer los permisos del token
+            List<String> permisos = jwtUtils.extractPermissions(token.replace("Bearer ", ""));
+
+            // Verificar si el usuario tiene permiso para crear formularios
+            if (!permisos.contains(NombrePermiso.ACCESO_FORMULARIOCREAR.getNombrePermiso())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponseDto<>("No tiene permiso para crear formularios", null, false));
+            }
 
             // Imprime el DTO para verificar los valores
             System.out.println("Formulario DTO: " + formularioDto);
 
-            Long usuarioId = formularioDto.getUsuarioId();
-            Usuario usuario = obtenerUsuarioPorId(usuarioId);// Método para obtener el usuario por su ID
-
-            // Crear una nueva instancia del formulario y establecer sus atributos
-            Formulario formulario = new Formulario();
-            formulario.setFechaFormulario(formularioDto.getFormulario().getFechaFormulario());
-            formulario.setNombreProfesor(formularioDto.getFormulario().getNombreProfesor());
-            formulario.setFacultad(formularioDto.getFormulario().getFacultad());
-            formulario.setPrograma(formularioDto.getFormulario().getPrograma());
-            formulario.setPeriodo(formularioDto.getFormulario().getPeriodo());
-            // Asignar estado directamente desde el DTO
-            formulario.setEstado(formularioDto.getFormulario().getEstado());
-
-            // Obtener el rol de docente del usuario
-            Rol rolDocente = usuario.getRoles().stream()
-                    .filter(rol -> rol.getTipoRol() == TipoRol.DOCENTE)
-                    .findFirst()
-                    .orElseThrow(() -> new RolNoEncontradoException("Rol de docente no encontrado"));
-
-            formulario.setRol(rolDocente); // Establecemos el rol en el formulario
             // Llamar al servicio para crear el formulario
-            Formulario nuevoFormulario = formularioService.crearFormulario(formulario, usuario);
+            Formulario nuevoFormulario = formularioService.crearFormulario(formularioDto);
+
             // Crear respuesta de éxito
             ApiResponseDto<Formulario> response = new ApiResponseDto<>("Formulario creado exitosamente", nuevoFormulario, true);
             return ResponseEntity.ok(response);
@@ -70,6 +66,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
 
 
     // Agregar AsignaturaDocencia al formulario
@@ -128,9 +125,22 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
     }
 
     // Revisar formulario
+    @PreAuthorize("hasRole('DECANO') or hasRole('VICERRECTORIA') or hasRole('DIRECCIONPROGRAMA') or hasRole('ADMIN')")
     @PostMapping("/{id}/revisar")
-    public ResponseEntity<String> revisarFormulario(@PathVariable Long id, @RequestBody RevisionRequest revisionRequest) {
+    public ResponseEntity<String> revisarFormulario(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long id,
+            @RequestBody RevisionRequest revisionRequest) {
         try {
+            // Extraer los permisos del token
+            List<String> permisos = jwtUtils.extractPermissions(token.replace("Bearer ", ""));
+
+            // Verificar si el usuario tiene permiso para revisar formularios
+            if (!permisos.contains(NombrePermiso.ACCESO_REVISAR.getNombrePermiso())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tiene permiso para revisar formularios.");
+            }
+
             // Obtén el formulario a revisar
             Formulario formulario = formularioService.findById(id);
 
@@ -150,6 +160,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
         }
     }
 
+
     // Obtener total de horas de un formulario
     @GetMapping("/{id}/total-horas")
     public ResponseEntity<Integer> calcularTotalHoras(@PathVariable Long id) {
@@ -162,13 +173,5 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
         }
     }
 
-    // Método auxiliar para obtener Usuario
-    private Usuario obtenerUsuarioPorId(Long usuarioId) throws Exception {
-        // Intenta obtener el usuario desde el servicio
-        Usuario usuario = usuarioService.findById(usuarioId);
-        if (usuario == null) {
-            throw new Exception("Usuario no encontrado con id: " + usuarioId);
-        }
-        return usuario;
-    }
+
 }
