@@ -1,8 +1,9 @@
 package com.ProyectoFormulario.ProyectoFormulario.Enum;
 
+// NombrePermiso.java
 public enum NombrePermiso {
 
-    ACCESO_FORMULARIOCREAR("acceso:formulariocrear"),
+    ACCESO_FORMULARIOCREAR("acceso:formulario"),
     ACCESO_REVISAR("acceso:revisar"),
     ACCESO_FORMULARIOEDITAR("acceso:formularioeditar"),
     VER_ACTIVIDADES("ver:actividades");
@@ -11,11 +12,10 @@ public enum NombrePermiso {
 
     NombrePermiso(String nombrePermiso) {
         this.nombrePermiso = nombrePermiso;
-
     }
 
     public String getNombrePermiso() {
         return nombrePermiso;
     }
-
 }
+

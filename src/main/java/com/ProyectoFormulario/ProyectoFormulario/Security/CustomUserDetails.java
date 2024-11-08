@@ -24,13 +24,19 @@ public class CustomUserDetails implements UserDetails{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = Stream.concat(
-                usuario.getRoles().stream().map(rol -> new SimpleGrantedAuthority("ROLE_" + rol.getTipoRol().name())),
-                usuario.getRoles().stream().flatMap(rol -> rol.getPermisos().stream())
+                usuario.getRoles().stream()
+                        .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol.getTipoRol().name())),  // Aquí el prefijo "ROLE_"
+                usuario.getRoles().stream()
+                        .flatMap(rol -> rol.getPermisos().stream())
                         .map(permiso -> new SimpleGrantedAuthority(permiso.getNombrePermiso().getNombrePermiso()))
         ).collect(Collectors.toList());
-        return authorities;
 
+        System.out.println("User Authorities: " + authorities); // Verificar autoridades
+        return authorities;
     }
+
+
+
 
     @Override
     public String getPassword() {

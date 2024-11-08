@@ -1,5 +1,6 @@
 package com.ProyectoFormulario.ProyectoFormulario.Security;
 
+import com.ProyectoFormulario.ProyectoFormulario.Enum.NombrePermiso;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,10 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.security.SecureRandom;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,19 +34,25 @@ public class JwtUtils {
     }
 
     public String extractUsername(String token) {
-        return extractAllClaims(token).getSubject();
+        Claims claims = extractAllClaims(token);
+        String username = claims.getSubject();
+        System.out.println("Extracted username: " + username);  // Para asegurarte de que el username está correcto
+        return username;
     }
+
 
     public List<GrantedAuthority> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
         List<String> roles = claims.get("roles", List.class);
+        System.out.println("Roles extracted: " + roles);  // Verifica que los roles estén correctos
         return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
-    // Nuevo método para extraer permisos desde el token
     public List<String> extractPermissions(String token) {
         Claims claims = extractAllClaims(token);
-        return claims.get("permissions", List.class); // Extrae permisos como lista de strings
+        List<String> permissions = claims.get("permissions", List.class);
+        System.out.println("Permissions extracted: " + permissions);  // Verifica que los permisos estén correctos
+        return permissions;
     }
 
     private Claims extractAllClaims(String token) {
@@ -61,8 +65,11 @@ public class JwtUtils {
 
     public boolean validateToken(String token, String username) {
         final String extractedUsername = extractUsername(token);
-        return (extractedUsername.equals(username) && !isTokenExpired(token));
+        boolean isValid = extractedUsername.equals(username) && !isTokenExpired(token);
+        System.out.println("Token valid: " + isValid);  // Verifica si el token es válido
+        return isValid;
     }
+
 
     private boolean isTokenExpired(String token) {
         return extractAllClaims(token).getExpiration().before(new Date());
@@ -74,7 +81,10 @@ public class JwtUtils {
         claims.put("roles", roles);
         claims.put("permissions", permissions); // Añade permisos a las claims
         return createToken(claims, username);
+
     }
+    List<String> permissions = Arrays.asList(NombrePermiso.ACCESO_FORMULARIOCREAR.getNombrePermiso(), NombrePermiso.ACCESO_REVISAR.getNombrePermiso());
+
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()

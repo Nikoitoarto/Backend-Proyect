@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,31 +25,48 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private AuthService authService; // Usamos tu servicio de autenticación para cargar los detalles del usuario
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
-        String jwt = null;
+        // Extrae el token del header "Authorization"
+        String token = extractTokenFromHeader(request);
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtils.extractUsername(jwt);
-        }
+        if (token != null) {
+            // Extrae el nombre de usuario del token
+            String username = jwtUtils.extractUsername(token);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (jwtUtils.validateToken(jwt, username)) {
-                List<GrantedAuthority> authorities = jwtUtils.extractRoles(jwt);
-                List<String> permissions = jwtUtils.extractPermissions(jwt);
-                authorities.addAll(permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+            // Si el token es válido, configura la autenticación
+            if (jwtUtils.validateToken(token, username)) {
+                // Extrae los roles y permisos del token
+                List<GrantedAuthority> authorities = jwtUtils.extractRoles(token);
 
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        username, null, authorities);
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                // Carga los detalles del usuario con los roles extraídos
+                UserDetails userDetails = authService.loadUserByUsername(username);
+
+                // Crea el objeto de autenticación con los roles y el usuario
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, authorities);
+
+                // Establece la autenticación en el contexto de seguridad
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
-        chain.doFilter(request, response);
+
+        // Continua con el filtro
+        filterChain.doFilter(request, response);
     }
+
+    // Método para extraer el token desde el header
+    private String extractTokenFromHeader(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7); // Extrae el token (sin "Bearer ")
+        }
+        return null;
+    }
+
 }

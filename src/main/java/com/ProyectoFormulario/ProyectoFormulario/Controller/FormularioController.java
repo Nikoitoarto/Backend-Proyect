@@ -33,35 +33,19 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
     @Autowired
     private FormularioService formularioService;
 
+    // Controlador donde se crea el formulario
     @Autowired
     private JwtUtils jwtUtils;
 
-    @PreAuthorize("hasRole('DOCENTE') or hasRole('ADMIN')") // Solo los usuarios con el rol 'DOCENTE' Y 'ADMIN' pueden acceder a este endpoint
+    @PreAuthorize("hasAuthority('acceso:formulario')")
     @PostMapping("/crear")
     public ResponseEntity<ApiResponseDto<Formulario>> crearFormulario(
-            @RequestHeader("Authorization") String token,
             @RequestBody FormularioDto formularioDto) {
         try {
-            // Extraer los permisos del token
-            List<String> permisos = jwtUtils.extractPermissions(token.replace("Bearer ", ""));
-
-            // Verificar si el usuario tiene permiso para crear formularios
-            if (!permisos.contains(NombrePermiso.ACCESO_FORMULARIOCREAR.getNombrePermiso())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ApiResponseDto<>("No tiene permiso para crear formularios", null, false));
-            }
-
-            // Imprime el DTO para verificar los valores
-            System.out.println("Formulario DTO: " + formularioDto);
-
-            // Llamar al servicio para crear el formulario
             Formulario nuevoFormulario = formularioService.crearFormulario(formularioDto);
-
-            // Crear respuesta de éxito
             ApiResponseDto<Formulario> response = new ApiResponseDto<>("Formulario creado exitosamente", nuevoFormulario, true);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            // Crear respuesta de error
             ApiResponseDto<Formulario> response = new ApiResponseDto<>("Error al crear el formulario: " + e.getMessage(), null, false);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
@@ -125,7 +109,6 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
     }
 
     // Revisar formulario
-    @PreAuthorize("hasRole('DECANO') or hasRole('VICERRECTORIA') or hasRole('DIRECCIONPROGRAMA') or hasRole('ADMIN')")
     @PostMapping("/{id}/revisar")
     public ResponseEntity<String> revisarFormulario(
             @RequestHeader("Authorization") String token,

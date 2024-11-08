@@ -3,7 +3,6 @@ package com.ProyectoFormulario.ProyectoFormulario.Security;
 import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDto;
 import com.ProyectoFormulario.ProyectoFormulario.Dto.LoginResponseDto;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Permiso;
-import com.ProyectoFormulario.ProyectoFormulario.Entity.Rol;
 import com.ProyectoFormulario.ProyectoFormulario.Enum.NombrePermiso;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IUsuarioRepository;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Usuario;
