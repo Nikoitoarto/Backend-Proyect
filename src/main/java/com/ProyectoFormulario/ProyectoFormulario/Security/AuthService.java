@@ -3,7 +3,9 @@ package com.ProyectoFormulario.ProyectoFormulario.Security;
 import com.ProyectoFormulario.ProyectoFormulario.Dto.ApiResponseDto;
 import com.ProyectoFormulario.ProyectoFormulario.Dto.LoginResponseDto;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Permiso;
+import com.ProyectoFormulario.ProyectoFormulario.Enum.EstadoFormulario;
 import com.ProyectoFormulario.ProyectoFormulario.Enum.NombrePermiso;
+import com.ProyectoFormulario.ProyectoFormulario.IRepository.IFormularioRepository;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.IUsuarioRepository;
 import com.ProyectoFormulario.ProyectoFormulario.Entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +26,16 @@ public class AuthService implements UserDetailsService {
 
     private final IUsuarioRepository usuarioRepository;
     private final JwtUtils jwtUtils;
+    private final IFormularioRepository formularioRepository;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthService(IUsuarioRepository usuarioRepository, JwtUtils jwtUtils) {
+    public AuthService(IUsuarioRepository usuarioRepository, JwtUtils jwtUtils, IFormularioRepository formularioRepository) {
         this.usuarioRepository = usuarioRepository;
         this.jwtUtils = jwtUtils;
+        this.formularioRepository = formularioRepository;
     }
 
     public ApiResponseDto<LoginResponseDto> login(String nombreUsuario, String contrasena) throws Exception {
@@ -68,11 +72,13 @@ public class AuthService implements UserDetailsService {
                 .distinct()                                  // Eliminar duplicados si hay permisos repetidos entre roles
                 .collect(Collectors.toList());               // Recoger en una lista
 
-        // Extraer los IDs de formularios accesibles para el usuario
-        List<Long> formularioId = usuario.getRoles().stream()
-                .flatMap(rol -> rol.getFormularios().stream())  // Accede a los formularios de cada rol
-                .map(Formulario::getId)                         // Obtiene el ID de cada formulario
-                .distinct()                                     // Elimina duplicados si hay formularios repetidos
+        // Obtener los formularios asociados al usuario, filtrados por un estado específico
+        EstadoFormulario estadoFormulario = EstadoFormulario.PENDIENTE; // Por ejemplo, solo los pendientes
+        List<Formulario> formularios = formularioRepository.findByEstado(estadoFormulario);
+
+        // Mapear los formularios a una lista de IDs (o cualquier otra información que necesites)
+        List<Long> formularioId = formularios.stream()
+                .map(Formulario::getId)
                 .collect(Collectors.toList());
 
         // Verifica si la lista de formularioIds está vacía y maneja el caso en consecuencia
