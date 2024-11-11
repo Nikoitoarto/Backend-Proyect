@@ -34,6 +34,9 @@ public class Rol extends ABaseEntity {
     )
     private Set<Permiso> permisos = new HashSet<>();
 
+    @OneToMany(mappedBy = "rol", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Formulario> formularios = new HashSet<>();
+
 
     // Constructor que acepta TipoRol
     public Rol(TipoRol tipoRol) {
@@ -48,6 +51,5 @@ public class Rol extends ABaseEntity {
     public void addPermiso(Permiso permiso) {
         this.permisos.add(permiso);
     }
-
 
 }

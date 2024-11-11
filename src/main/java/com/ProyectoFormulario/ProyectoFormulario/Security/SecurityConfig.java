@@ -48,6 +48,10 @@ public class SecurityConfig {
                                         "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**")
                                 .permitAll()
                                 // Rutas protegidas por permisos específicos
+
+                                .requestMatchers("/proyectoformulario/api/formulario")
+                                .hasAuthority("acceso:formulario")
+
                                 .requestMatchers("/proyectoformulario/api/formulario/crear")
                                 .hasAuthority("acceso:formulario")
 

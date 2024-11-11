@@ -12,7 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.ProyectoFormulario.ProyectoFormulario.Entity.Formulario;
 
+
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +61,19 @@ public class AuthService implements UserDetailsService {
                 .collect(Collectors.toList());               // Recoger en una lista
 
 
+        // Extraer los IDs de formularios accesibles para el usuario
+        List<Long> formularioId = usuario.getRoles().stream()
+                .flatMap(rol -> rol.getFormularios().stream())  // Accede a los formularios de cada rol
+                .map(Formulario::getId)                         // Obtiene el ID de cada formulario
+                .distinct()                                     // Elimina duplicados si hay formularios repetidos
+                .collect(Collectors.toList());
+
+        // Verifica si la lista de formularioIds está vacía y maneja el caso en consecuencia
+        if (formularioId.isEmpty()) {
+            System.out.println("No hay formularios asignados para este usuario.");
+            formularioId = Collections.emptyList(); // Asegura que la lista esté vacía en lugar de null
+        }
+        
         // Generar el token con el nombre de usuario, roles y permisos
         String token = jwtUtils.generateToken(nombreUsuario, roles, permisos);
 
@@ -67,7 +83,9 @@ public class AuthService implements UserDetailsService {
                 usuario.getNombreUsuario(),
                 usuario.getPersona().getId(),
                 usuario.getRoles().iterator().next().getId(),
-                usuario.getContrasena()
+                usuario.getContrasena(),
+                formularioId
+
         );
 
         return new ApiResponseDto<>("Login exitoso", responseData, true);

@@ -1,5 +1,7 @@
 package com.ProyectoFormulario.ProyectoFormulario.Dto;
 
+import java.util.List;
+
 public class LoginResponseDto {
 
     private String token;
@@ -7,16 +9,27 @@ public class LoginResponseDto {
     private String contrasena;
     private Long personaId;
     private Long rolId;
+    private List<Long> formularioId;
 
     // Constructor
-    public LoginResponseDto(String token, String usuarioNombre, Long personaId, Long rolId, String contrasena) {
+
+
+    public LoginResponseDto(String token, String nombreUsuario, Long id, Long id1, String contrasena, List<Long> formularioId) {
         this.token = token;
         this.usuarioNombre = usuarioNombre;
         this.personaId = personaId;
         this.rolId = rolId;
         this.contrasena = contrasena;
+        this.formularioId = formularioId;
     }
 
+    public List<Long> getFormularioId() {
+        return formularioId;
+    }
+
+    public void setFormularioId(List<Long> formularioId) {
+        this.formularioId = formularioId;
+    }
 
     public String getContrasena() {
         return contrasena;
