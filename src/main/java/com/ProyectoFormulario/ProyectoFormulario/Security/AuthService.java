@@ -46,11 +46,19 @@ public class AuthService implements UserDetailsService {
             throw new Exception("Contraseña incorrecta");
         }
 
+        // Verifica si el usuario tiene una persona asociada y al menos un rol
+        if (usuario.getPersona() == null) {
+            throw new Exception("El usuario no tiene una persona asociada");
+        }
+
         // Extraer los roles del usuario y convertirlos en una lista de strings
         List<String> roles = usuario.getRoles().stream()
                 .map(rol -> rol.getTipoRol().name())
                 .collect(Collectors.toList());
 
+        if (usuario.getRoles().isEmpty()) {
+            throw new Exception("El usuario no tiene roles asociados");
+        }
         // Extraer los permisos de cada rol del usuario y almacenarlos en una lista de strings
         // Suponiendo que `usuario.getRoles()` devuelve una colección de roles
         List<String> permisos = usuario.getRoles().stream()
@@ -59,7 +67,6 @@ public class AuthService implements UserDetailsService {
                 .map(NombrePermiso::getNombrePermiso)         // Convertir NombrePermiso a String
                 .distinct()                                  // Eliminar duplicados si hay permisos repetidos entre roles
                 .collect(Collectors.toList());               // Recoger en una lista
-
 
         // Extraer los IDs de formularios accesibles para el usuario
         List<Long> formularioId = usuario.getRoles().stream()
@@ -73,7 +80,7 @@ public class AuthService implements UserDetailsService {
             System.out.println("No hay formularios asignados para este usuario.");
             formularioId = Collections.emptyList(); // Asegura que la lista esté vacía en lugar de null
         }
-        
+
         // Generar el token con el nombre de usuario, roles y permisos
         String token = jwtUtils.generateToken(nombreUsuario, roles, permisos);
 

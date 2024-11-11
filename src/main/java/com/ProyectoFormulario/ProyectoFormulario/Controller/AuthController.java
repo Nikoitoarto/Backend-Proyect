@@ -33,7 +33,6 @@ public class AuthController {
             ApiResponseDto<LoginResponseDto> response = authService.login(
                     loginRequest.getNombreUsuario(), loginRequest.getContrasena()
             );
-
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiResponseDto<>(e.getMessage(), null, false), HttpStatus.BAD_REQUEST);

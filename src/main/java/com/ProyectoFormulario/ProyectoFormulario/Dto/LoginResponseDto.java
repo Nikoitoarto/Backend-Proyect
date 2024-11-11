@@ -14,7 +14,7 @@ public class LoginResponseDto {
     // Constructor
 
 
-    public LoginResponseDto(String token, String nombreUsuario, Long id, Long id1, String contrasena, List<Long> formularioId) {
+    public LoginResponseDto(String token, String usuarioNombre, Long personaId, Long rolId, String contrasena, List<Long> formularioId) {
         this.token = token;
         this.usuarioNombre = usuarioNombre;
         this.personaId = personaId;

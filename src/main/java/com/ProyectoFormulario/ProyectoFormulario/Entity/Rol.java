@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "rol")
 public class Rol extends ABaseEntity {
 
-    @Enumerated(EnumType.STRING) // O EnumType.ORDINAL si prefieres usar índices
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_rol", nullable = false, unique = true)
     private TipoRol tipoRol;
 
@@ -34,7 +34,9 @@ public class Rol extends ABaseEntity {
     )
     private Set<Permiso> permisos = new HashSet<>();
 
-    @OneToMany(mappedBy = "rol", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy = "rol", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Formulario> formularios = new HashSet<>();
 
 

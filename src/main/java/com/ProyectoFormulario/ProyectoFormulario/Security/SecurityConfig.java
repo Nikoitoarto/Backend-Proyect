@@ -83,7 +83,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     // Filtro JWT (asegúrate de tener un filtro configurado para procesar el JWT)
     @Bean
     public JwtRequestFilter jwtRequestFilter() {
