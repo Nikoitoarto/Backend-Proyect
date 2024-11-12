@@ -9,15 +9,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -36,26 +33,31 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String token = extractTokenFromHeader(request);
 
         if (token != null) {
-            // Extrae el nombre de usuario del token
+            // Extrae el nombre de usuario
             String username = jwtUtils.extractUsername(token);
 
             // Si el token es válido, configura la autenticación
             if (jwtUtils.validateToken(token, username)) {
                 // Extrae los roles y permisos del token
+                Long usuarioId = jwtUtils.extractUsuarioId(token);
+                System.out.println("Usuario ID extraído del JWT: " + usuarioId);
+                request.setAttribute("usuarioId", usuarioId);
                 List<GrantedAuthority> authorities = jwtUtils.extractRoles(token);
 
                 // Carga los detalles del usuario con los roles extraídos
                 UserDetails userDetails = authService.loadUserByUsername(username);
 
-                // Crea el objeto de autenticación con los roles y el usuario
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, authorities);
+                // Aquí, si lo deseas, puedes pasar el usuarioId a los detalles del usuario o al contexto
+                // Puedes guardarlo en el SecurityContextHolder o en el Authentication
+                // Esto depende de si necesitas usarlo más adelante
+                // Ejemplo de agregar al contexto de seguridad:
+                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                        userDetails, null, authorities));
 
-                // Establece la autenticación en el contexto de seguridad
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                // O también puedes almacenar el usuarioId directamente en el contexto:
+                request.setAttribute("usuarioId", usuarioId); // O usar otro mecanismo como el SecurityContext
             }
         }
-
         // Continua con el filtro
         filterChain.doFilter(request, response);
     }
@@ -68,5 +70,4 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
 }

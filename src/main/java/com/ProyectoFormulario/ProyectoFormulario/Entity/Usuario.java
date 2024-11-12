@@ -1,5 +1,6 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,4 +33,8 @@ public class Usuario extends ABaseEntity {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "persona_id", nullable = false)
     private Persona persona;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Formulario> formularios = new HashSet<>();
  }

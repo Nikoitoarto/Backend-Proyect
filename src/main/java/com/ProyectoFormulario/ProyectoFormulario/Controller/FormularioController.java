@@ -8,6 +8,7 @@ import com.ProyectoFormulario.ProyectoFormulario.Enum.NombrePermiso;
 import com.ProyectoFormulario.ProyectoFormulario.IService.*;
 import com.ProyectoFormulario.ProyectoFormulario.Security.JwtUtils;
 import com.ProyectoFormulario.ProyectoFormulario.Service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,11 +38,22 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
     @Autowired
     private JwtUtils jwtUtils;
 
+
     @PreAuthorize("hasAuthority('acceso:formulario')")
     @PostMapping("/crear")
     public ResponseEntity<ApiResponseDto<Formulario>> crearFormulario(
-            @RequestBody FormularioDto formularioDto) {
+            @RequestBody FormularioDto formularioDto,
+            HttpServletRequest request) { // Agregamos el request para obtener el usuarioId
         try {
+            // Obtener el usuarioId desde el request
+            Long usuarioId = (Long) request.getAttribute("usuarioId");
+            System.out.println("Usuario ID en el controlador: " + usuarioId);
+
+            if (usuarioId == null) {
+                throw new Exception("El usuario no está autenticado o el usuarioId no está disponible.");
+            }
+
+            // Crear el formulario
             Formulario nuevoFormulario = formularioService.crearFormulario(formularioDto);
             ApiResponseDto<Formulario> response = new ApiResponseDto<>("Formulario creado exitosamente", nuevoFormulario, true);
             return ResponseEntity.ok(response);
@@ -50,6 +62,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
 
 
     // Agregar AsignaturaDocencia al formulario

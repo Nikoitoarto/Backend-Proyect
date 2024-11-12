@@ -1,6 +1,5 @@
 package com.ProyectoFormulario.ProyectoFormulario.Security;
 
-import com.ProyectoFormulario.ProyectoFormulario.Enum.NombrePermiso;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -40,6 +39,15 @@ public class JwtUtils {
         return username;
     }
 
+    public Long extractUsuarioId(String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("usuarioId", Long.class); // Extraer usuarioId
+
+    }
+
 
     public List<GrantedAuthority> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
@@ -76,15 +84,14 @@ public class JwtUtils {
     }
 
     // Modificación del método generateToken para incluir permisos
-    public String generateToken(String username, List<String> roles, List<String> permissions) {
+    public String generateToken(String username, List<String> roles, List<String> permissions, Long usuarioId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
-        claims.put("permissions", permissions); // Añade permisos a las claims
+        claims.put("permissions", permissions);// Añade permisos a las claims
+        claims.put("username", username);
+        claims.put("usuarioId", usuarioId);
         return createToken(claims, username);
-
     }
-    List<String> permissions = Arrays.asList(NombrePermiso.ACCESO_FORMULARIOCREAR.getNombrePermiso(), NombrePermiso.ACCESO_REVISAR.getNombrePermiso());
-
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()

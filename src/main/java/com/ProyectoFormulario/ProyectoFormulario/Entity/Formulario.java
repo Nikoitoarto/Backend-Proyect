@@ -56,6 +56,12 @@ public class Formulario extends ABaseEntity{
     @JoinColumn(name = "rol_id", nullable = false)
     private Rol rol;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+
+
 
 
 

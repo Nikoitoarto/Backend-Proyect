@@ -72,14 +72,17 @@ public class AuthService implements UserDetailsService {
                 .distinct()                                  // Eliminar duplicados si hay permisos repetidos entre roles
                 .collect(Collectors.toList());               // Recoger en una lista
 
-        // Obtener los formularios asociados al usuario, filtrados por un estado específico
-        EstadoFormulario estadoFormulario = EstadoFormulario.PENDIENTE; // Por ejemplo, solo los pendientes
-        List<Formulario> formularios = formularioRepository.findByEstado(estadoFormulario);
+        // Filtrar los formularios pendientes del usuario logueado
+        EstadoFormulario estadoFormulario = EstadoFormulario.PENDIENTE;
+        List<Formulario> formularios = formularioRepository.findByEstadoAndUsuarioId(estadoFormulario, usuario.getId());
+        System.out.println("Formularios pendientes para el usuario " + usuario.getNombreUsuario() + ": " + formularios);
 
-        // Mapear los formularios a una lista de IDs (o cualquier otra información que necesites)
+
         List<Long> formularioId = formularios.stream()
                 .map(Formulario::getId)
                 .collect(Collectors.toList());
+        System.out.println("Formulario IDs: " + formularioId);
+
 
         // Verifica si la lista de formularioIds está vacía y maneja el caso en consecuencia
         if (formularioId.isEmpty()) {
@@ -88,7 +91,7 @@ public class AuthService implements UserDetailsService {
         }
 
         // Generar el token con el nombre de usuario, roles y permisos
-        String token = jwtUtils.generateToken(nombreUsuario, roles, permisos);
+        String token = jwtUtils.generateToken(nombreUsuario, roles, permisos, usuario.getId());
 
         // Crear el objeto de respuesta con los datos necesarios
         LoginResponseDto responseData = new LoginResponseDto(
@@ -97,7 +100,8 @@ public class AuthService implements UserDetailsService {
                 usuario.getPersona().getId(),
                 usuario.getRoles().iterator().next().getId(),
                 usuario.getContrasena(),
-                formularioId
+                formularioId,
+                usuario.getId()
 
         );
 

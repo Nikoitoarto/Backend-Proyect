@@ -10,11 +10,10 @@ import com.ProyectoFormulario.ProyectoFormulario.IRepository.*;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IFormularioService;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IUsuarioService;
 import com.ProyectoFormulario.ProyectoFormulario.exceptions.PersonaNoAsociadaException;
-
 import com.ProyectoFormulario.ProyectoFormulario.exceptions.RolNoEncontradoException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 
 
@@ -52,13 +51,25 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
     @Autowired
     private IRevisionFormularioRepository revisionFormularioRepository;
 
+    @Autowired
+    private HttpServletRequest request;
+
 
 
     @Override
-
     public Formulario crearFormulario(FormularioDto formularioDto) throws Exception {
-        Long usuarioId = formularioDto.getUsuarioId();
-        Usuario usuario = obtenerUsuarioPorId(usuarioId); // Método para obtener el usuario por su ID
+
+        // Obtener el usuarioId directamente desde el request (usando el JwtRequestFilter)
+        Long usuarioId = (Long) request.getAttribute("usuarioId");
+        System.out.println("Usuario ID en el servicio: " + usuarioId);
+
+        if (usuarioId == null) {
+            throw new Exception("El usuarioId no está disponible en la solicitud.");
+        }
+
+
+        Usuario usuario = obtenerUsuarioPorId(usuarioId);
+        // Método para obtener el usuario por su ID
 
         // Crear una nueva instancia del formulario y establecer sus atributos
         Formulario formulario = new Formulario();
@@ -68,6 +79,8 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
         formulario.setPrograma(formularioDto.getFormulario().getPrograma());
         formulario.setPeriodo(formularioDto.getFormulario().getPeriodo());
         formulario.setEstado(formularioDto.getFormulario().getEstado());
+        // Establecer el usuario en el formulario
+        formulario.setUsuario(usuario); // Asignar el usuario al formulario para persistir la relación
 
         // Obtener el rol de docente del usuario
         Rol rolDocente = usuario.getRoles().stream()
@@ -86,6 +99,7 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
         System.out.println("Formulario creado por: " + nombreCompletoProfesor);
         formulario.setNombreProfesor(nombreCompletoProfesor); // Establecer el nombre completo
         formulario.setRol(rolDocente); // Establecer el rol en el formulario
+
 
         // Guardar el formulario usando el método save de la clase base
         return save(formulario); // save() proviene de ABaseService

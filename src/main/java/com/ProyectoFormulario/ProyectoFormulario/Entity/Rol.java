@@ -40,6 +40,8 @@ public class Rol extends ABaseEntity {
     private Set<Formulario> formularios = new HashSet<>();
 
 
+
+
     // Constructor que acepta TipoRol
     public Rol(TipoRol tipoRol) {
         this.tipoRol = tipoRol;

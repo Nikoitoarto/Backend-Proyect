@@ -10,17 +10,28 @@ public class LoginResponseDto {
     private Long personaId;
     private Long rolId;
     private List<Long> formularioId;
+    private Long usuarioId;
 
     // Constructor
 
 
-    public LoginResponseDto(String token, String usuarioNombre, Long personaId, Long rolId, String contrasena, List<Long> formularioId) {
+    public LoginResponseDto(String token, String usuarioNombre, Long personaId, Long rolId, String contrasena, List<Long> formularioId, Long usuarioId) {
         this.token = token;
         this.usuarioNombre = usuarioNombre;
         this.personaId = personaId;
         this.rolId = rolId;
         this.contrasena = contrasena;
         this.formularioId = formularioId;
+        this.usuarioId = usuarioId;
+    }
+
+
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
     public List<Long> getFormularioId() {
