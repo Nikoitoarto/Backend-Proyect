@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  postgresformulario:
+    image: postgres:latest
+    container_name: postgresformulario
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - red_poyectoformulario
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  aplicacionformulario:
+    build: .
+    ports:
+      - "9080:9080"
+    container_name: aplicacionformulario
+    depends_on:
+      - postgresformulario
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresformulario:5432/proyectoformulario
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - red_poyectoformulario
+
+
+networks:
+  red_poyectoformulario:
+    driver: bridge
+
+volumes:
+  postgres-data:

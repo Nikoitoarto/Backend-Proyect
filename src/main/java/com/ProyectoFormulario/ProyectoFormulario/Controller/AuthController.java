@@ -20,11 +20,9 @@ public class AuthController {
 
 
     @Autowired
-    public AuthController(AuthService authService, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, IUsuarioService usuarioService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
-
-
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDto<LoginResponseDto>> login(@RequestBody LoginRequest loginRequest) {

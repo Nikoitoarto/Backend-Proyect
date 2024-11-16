@@ -1,0 +1,23 @@
+
+#Creacion de la imagen
+FROM openjdk:21-jdk-slim
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copia el archivo Maven Wrapper y el archivo pom.xml
+COPY mvnw mvnw.cmd ./
+COPY .mvn .mvn
+COPY pom.xml ./
+
+# Descarga las dependencias de Maven (sin empaquetar la aplicación todavía)
+RUN ./mvnw dependency:resolve
+
+# Copia el código fuente al contenedor
+COPY src /app/src
+
+# Expone el puerto 8080 para que puedas acceder a la app
+EXPOSE 9080
+
+# Comando para ejecutar la aplicación usando el Maven Wrapper
+CMD ["./mvnw", "spring-boot:run"]
