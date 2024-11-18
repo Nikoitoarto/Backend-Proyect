@@ -71,3 +71,31 @@
   }
 }
 ````
+## Body para la gestion del endpoint asignaturaDocencia
+
+`````json
+{
+  "nombre_asignatura": "Matemáticas Básicas",
+  "programa": "Ingeniería de Sistemas",
+  "grupo": "A",
+  "sede": "Principal",
+  "horasSemanales": 10,
+  "horasSemestre": 160,
+  "totalHorasSemanales": 20,
+  "totalHorasSemestre": 320
+}
+`````
+
+## Body para la gestion del endpoint de cada actividad.
+
+`````json
+{
+  "actividad": "Matemáticas Básicas",
+  "descripcionActividad": "Ingeniería de Sistemas",
+  "producto": "si o no",
+  "horasSemanales": 10,
+  "horasSemestre": 160,
+  "totalHorasSemanales": 20,
+  "totalHorasSemestre": 320
+}
+`````

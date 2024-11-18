@@ -1,6 +1,7 @@
 package com.ProyectoFormulario.ProyectoFormulario.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +33,8 @@ public class ActividadesCientificas extends ABaseEntity{
     @Column(name = "total_horas_semestre", nullable = false)
     private Long totalHorasSemestre;
 
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
     @JoinColumn(name = "formulario_id", nullable = false)
     private Formulario formulario;
 

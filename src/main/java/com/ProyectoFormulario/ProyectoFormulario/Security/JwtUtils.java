@@ -48,7 +48,6 @@ public class JwtUtils {
 
     }
 
-
     public List<GrantedAuthority> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
         List<String> roles = claims.get("roles", List.class);

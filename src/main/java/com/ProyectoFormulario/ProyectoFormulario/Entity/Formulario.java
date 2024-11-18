@@ -34,19 +34,19 @@ public class Formulario extends ABaseEntity{
     @Column(name = "estado", nullable = false)
     private EstadoFormulario estado;
 
-    @OneToOne(mappedBy = "formulario", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "formulario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private ActividadesAdministrativa actividadesAdministrativa;
 
-    @OneToOne(mappedBy = "formulario", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "formulario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private ActividadesCientificas actividadesCientificas;
 
-    @OneToOne(mappedBy = "formulario", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "formulario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private ActividadesDocencia actividadesDocencia;
 
-    @OneToOne(mappedBy = "formulario", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "formulario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private ActividadesLabores actividadesLabores;
 
-    @OneToOne(mappedBy = "formulario", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "formulario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private AsignaturaDocencia asignaturaDocencia;
 
     @OneToMany(mappedBy = "formulario",fetch = FetchType.EAGER)

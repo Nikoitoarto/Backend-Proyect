@@ -36,8 +36,6 @@ public class CustomUserDetails implements UserDetails{
     }
 
 
-
-
     @Override
     public String getPassword() {
         return usuario.getContrasena();

@@ -8,7 +8,5 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ActividadesLaboresDto {
-
-    private Long formularioId;
     private ActividadesLabores actividadesLabores;
 }

@@ -66,6 +66,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
 
 
     // Agregar AsignaturaDocencia al formulario
+    @PreAuthorize("hasAuthority('acceso:formulario')")
     @PostMapping("/{id}/asignatura-docencia")
     public ResponseEntity<AsignaturaDocencia> agregarAsignaturaDocencia(@PathVariable Long id, @RequestBody AsignaturaDocencia asignaturaDocencia) {
         try {
@@ -77,6 +78,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
     }
 
     // Agregar ActividadesAdministrativa al formulario
+    @PreAuthorize("hasAuthority('acceso:formulario')")
     @PostMapping("/{id}/actividades-administrativas")
     public ResponseEntity<ActividadesAdministrativa> agregarActividadesAdministrativa(@PathVariable Long id, @RequestBody ActividadesAdministrativa actividadesAdministrativa) {
         try {
@@ -88,6 +90,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
     }
 
     // Agregar ActividadesCientificas al formulario
+    @PreAuthorize("hasAuthority('acceso:formulario')")
     @PostMapping("/{id}/actividades-cientificas")
     public ResponseEntity<ActividadesCientificas> agregarActividadesCientificas(@PathVariable Long id, @RequestBody ActividadesCientificas actividadesCientificas) {
         try {
@@ -99,6 +102,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
     }
 
     // Agregar ActividadesDocencia al formulario
+    @PreAuthorize("hasAuthority('acceso:formulario')")
     @PostMapping("/{id}/actividades-docencia")
     public ResponseEntity<ActividadesDocencia> agregarActividadesDocencia(@PathVariable Long id, @RequestBody ActividadesDocencia actividadesDocencia) {
         try {
@@ -110,6 +114,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
     }
 
     // Agregar ActividadesLabores al formulario
+    @PreAuthorize("hasAuthority('acceso:formulario')")
     @PostMapping("/{id}/actividades-laborales")
     public ResponseEntity<ActividadesLabores> agregarActividadesLabores(@PathVariable Long id, @RequestBody ActividadesLabores actividadesLabores) {
         try {
@@ -157,6 +162,7 @@ public class FormularioController extends ABaseController<Formulario, IFormulari
 
 
     // Obtener total de horas de un formulario
+    @PreAuthorize("hasAuthority('acceso:formulario')")
     @GetMapping("/{id}/total-horas")
     public ResponseEntity<Integer> calcularTotalHoras(@PathVariable Long id) {
         try {

@@ -9,6 +9,7 @@ import com.ProyectoFormulario.ProyectoFormulario.Enum.TipoRol;
 import com.ProyectoFormulario.ProyectoFormulario.IRepository.*;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IFormularioService;
 import com.ProyectoFormulario.ProyectoFormulario.IService.IUsuarioService;
+import com.ProyectoFormulario.ProyectoFormulario.exceptions.FormularioInvalidoException;
 import com.ProyectoFormulario.ProyectoFormulario.exceptions.PersonaNoAsociadaException;
 import com.ProyectoFormulario.ProyectoFormulario.exceptions.RolNoEncontradoException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -78,7 +79,7 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
         formulario.setFacultad(formularioDto.getFormulario().getFacultad());
         formulario.setPrograma(formularioDto.getFormulario().getPrograma());
         formulario.setPeriodo(formularioDto.getFormulario().getPeriodo());
-        formulario.setEstado(formularioDto.getFormulario().getEstado());
+        formulario.setEstado(EstadoFormulario.PENDIENTE);
         // Establecer el usuario en el formulario
         formulario.setUsuario(usuario); // Asignar el usuario al formulario para persistir la relación
 
@@ -119,6 +120,10 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
     @Override
     public AsignaturaDocencia agregarAsignaturaDocencia(Long id, AsignaturaDocencia asignaturaDocencia) throws Exception {
         Formulario formulario = findById(id);
+        // Verificar si el formulario no fue encontrado
+        if (formulario == null) {
+            throw new FormularioInvalidoException("Formulario con id " + id + " no encontrado");
+        }
         asignaturaDocencia.setFormulario(formulario);
         return asignaturaDocenciaRepository.save(asignaturaDocencia);
     }
@@ -126,6 +131,9 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
     @Override
     public ActividadesAdministrativa agregarActividadesAdministrativa(Long id, ActividadesAdministrativa actividadesAdministrativa) throws Exception {
         Formulario formulario = findById(id);
+        if (formulario == null) {
+            throw new FormularioInvalidoException("Formulario con id " + id + " no encontrado");
+        }
         actividadesAdministrativa.setFormulario(formulario);
         return actividadesAdministrativaRepository.save(actividadesAdministrativa);
     }
@@ -133,6 +141,9 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
     @Override
     public ActividadesCientificas agregarActividadesCientificas(Long id, ActividadesCientificas actividadesCientificas) throws Exception {
         Formulario formulario = findById(id);
+        if (formulario == null) {
+            throw new FormularioInvalidoException("Formulario con id " + id + " no encontrado");
+        }
         actividadesCientificas.setFormulario(formulario);
         return actividadesCientificasRepository.save(actividadesCientificas);
     }
@@ -140,6 +151,9 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
     @Override
     public ActividadesDocencia agregarActividadesDocencia(Long id, ActividadesDocencia actividadesDocencia) throws Exception {
         Formulario formulario = findById(id);
+        if (formulario == null) {
+            throw new FormularioInvalidoException("Formulario con id " + id + " no encontrado");
+        }
         actividadesDocencia.setFormulario(formulario);
         return actividadesDocenciaRepository.save(actividadesDocencia);
     }
@@ -147,9 +161,25 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
     @Override
     public ActividadesLabores agregarActividadesLabores(Long id, ActividadesLabores actividadesLabores) throws Exception {
         Formulario formulario = findById(id);
+        if (formulario == null) {
+            throw new FormularioInvalidoException("Formulario con id " + id + " no encontrado");
+        }
         actividadesLabores.setFormulario(formulario);
         return actividadesLaboralesRepository.save(actividadesLabores);
     }
+
+
+    // Finalizar formulario
+    @Override
+    public Formulario finalizarFormulario(Long id) throws FormularioInvalidoException {
+        Formulario formulario = formularioRepository.findById(id)
+                .orElseThrow(() -> new FormularioInvalidoException("Formulario no encontrado"));
+
+        formulario.setEstado(EstadoFormulario.DILIGENCIADO);
+        return formularioRepository.save(formulario);
+    }
+
+
 
 
     @Override
@@ -218,15 +248,7 @@ public class FormularioService extends ABaseService<Formulario> implements IForm
         revisionFormularioRepository.save(revision);
     }
 
-    private void verificarRol(Usuario usuario, TipoRol tipoRol) throws Exception {
-        boolean tieneRol = usuario.getRoles().stream()
-                .anyMatch(rol -> rol.getTipoRol() == tipoRol);
-        if (!tieneRol) {
-            throw new Exception("Permiso denegado: El usuario no tiene el rol necesario.");
-        }
-    }
-
-    public int calcularTotalHoras(Formulario formulario) {
+     public int calcularTotalHoras(Formulario formulario) {
         int totalHoras = 0;
 
         // Sumar horas de AsignaturaDocencia

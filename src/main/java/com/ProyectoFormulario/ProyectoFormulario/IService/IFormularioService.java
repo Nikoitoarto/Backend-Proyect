@@ -12,5 +12,6 @@ public interface IFormularioService extends IBaseService<Formulario> {
     ActividadesCientificas agregarActividadesCientificas(Long id,  ActividadesCientificas actividadesCientificas) throws Exception;
     ActividadesDocencia agregarActividadesDocencia(Long id,  ActividadesDocencia actividadesDocencia) throws Exception;
     ActividadesLabores agregarActividadesLabores(Long id,  ActividadesLabores actividadesLabores) throws Exception;
+    Formulario finalizarFormulario (Long id)throws Exception;
     void revisarFormulario(Formulario formulario, Usuario usuario, String comentario, EstadoRevision estadoRevision) throws Exception;
 }
